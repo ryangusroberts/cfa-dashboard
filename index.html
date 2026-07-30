@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Corporate Freedom Accelerator · Dashboard</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  /* Brand system matched to vmleader.com (Vertical Motion) */
+  :root{--navy:#081e2b;--navy-mid:#0d2d40;--navy-soft:#153347;--slate:#5B7C99;--blue:#5B7C99;
+    --orange:#fc6502;--orange-dk:#d95400;--icy:#CFE8EF;
+    --ink:#081e2b;--muted:#64748b;--line:#e2e8f0;--bg:#f8fafc;--card:#fff;
+    --crit:#C0392B;--high:#B8860B;--supp:#7A828E;--green:#2E7D46;
+    --critbg:#FBE9E7;--highbg:#FBF3DC;--suppbg:#EEF1F5;
+    --font-display:'DM Serif Display',Georgia,serif;--font-body:'Inter',system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+    --shadow:0 1px 4px rgba(8,30,43,.07),0 4px 20px rgba(8,30,43,.06);}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--font-body);color:var(--ink);background:var(--bg)}
+  .app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+  .side{background:#fff;border-right:1px solid var(--line);padding:22px 18px;position:sticky;top:0;height:100vh;overflow:auto}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .logo{width:38px;height:38px;border-radius:9px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+  .brand b{color:var(--navy);font-size:15px;line-height:1.1;font-family:var(--font-display);font-weight:400}.brand span{color:var(--orange);font-size:11px;font-weight:700;letter-spacing:.03em}
+  .pill{margin:14px 0 16px;background:var(--icy);color:var(--navy);font-weight:700;font-size:12.5px;border-radius:8px;padding:9px 12px}
+  .ring-wrap{display:flex;flex-direction:column;align-items:center;margin:6px 0}
+  .ring-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:6px}
+  .side h4{color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin:16px 0 8px}
+  .navrow{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-radius:8px;font-size:13px;color:#374151;cursor:pointer}
+  .navrow:hover{background:#F3F6FB}
+  .navrow .sc{font-weight:800;font-size:12.5px;color:var(--navy)}
+  .btn{margin-top:14px;width:100%;border:1px solid var(--line);background:#fff;color:var(--navy);font-weight:600;padding:9px;border-radius:8px;cursor:pointer;font-size:13px}
+  .btn:hover{background:#F3F6FB}
+  .main{padding:26px 30px 60px;max-width:1120px}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+  h1{font-size:28px;color:var(--navy);margin:0 0 3px;font-family:var(--font-display);font-weight:400}.sub{color:var(--muted);font-size:13px}
+  .nameinput{border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:14px;color:var(--navy);font-weight:600;min-width:200px}
+  .next{margin:18px 0 4px;border-radius:10px;padding:13px 16px;font-weight:600;font-size:14.5px;background:var(--critbg);color:var(--crit)}
+  .next.done{background:#E9F6EE;color:var(--green)}
+  .bar{height:12px;border-radius:8px;background:#E7EBF2;margin:16px 0 4px;overflow:hidden}
+  .bar .fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--orange-dk));border-radius:8px;transition:width .35s}
+  .bar-scale{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-bottom:18px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--muted);border-radius:10px;padding:12px 14px;box-shadow:var(--shadow)}
+  .card .t{color:var(--muted);font-size:12.5px}.card .v{font-weight:800;font-size:22px;color:var(--navy);margin-top:2px}
+  .card .v small{font-size:12px;font-weight:600;color:var(--muted)}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;box-shadow:var(--shadow);margin-top:22px}
+  .panel h3{margin:0 0 2px;color:var(--navy);font-size:18px;font-family:var(--font-display);font-weight:400}.panel .hint{color:var(--muted);font-size:12.5px;margin-bottom:10px}
+  .radar-wrap{display:flex;justify-content:center}
+  .legend{display:flex;gap:16px;justify-content:center;margin-top:8px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
+  .stage{margin-top:10px}
+  .stage h4{color:var(--navy);font-size:14.5px;margin:16px 0 6px;padding-bottom:6px;border-bottom:2px solid #EEF1F6;display:flex;justify-content:space-between}
+  .stage h4 .p{font-size:12.5px;color:var(--muted);font-weight:600}
+  .subgroup{color:var(--blue);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin:12px 4px 2px}
+  .item{display:flex;gap:11px;align-items:flex-start;padding:9px 6px;border-radius:8px;cursor:pointer;border-left:4px solid transparent}
+  .item:hover{background:#F7F9FC}
+  .item.crit{border-left-color:var(--crit)}.item.high{border-left-color:var(--high)}.item.supp{border-left-color:var(--supp)}
+  .item .box{width:20px;height:20px;border:2px solid #C4CBD6;border-radius:5px;flex:0 0 auto;margin-top:1px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800}
+  .item.part .box{border-color:var(--blue);color:var(--blue);background:#EAF1FB}
+  .item.done .box{background:var(--green);border-color:var(--green)}
+  .item.done .txt{text-decoration:line-through;color:var(--muted)}
+  .num{font-weight:800;margin-right:6px}
+  .tag{font-size:10px;font-weight:800;padding:1.5px 7px;border-radius:20px;margin-left:8px;vertical-align:middle}
+  .tag.crit{background:var(--critbg);color:var(--crit)}.tag.high{background:var(--highbg);color:#8a6600}.tag.supp{background:var(--suppbg);color:var(--supp)}
+  .wsbadge{font-size:10px;font-weight:700;color:var(--muted);margin-left:8px;vertical-align:middle}
+  .txt{font-size:14px}.dom{color:var(--muted);font-size:11.5px}
+  .statusnote{font-size:11px;font-weight:700;margin-top:2px}
+  .statusnote.open{color:var(--blue)}.statusnote.ok{color:var(--green)}
+  .handoff{border-left:5px solid var(--navy);background:linear-gradient(180deg,#EEF3FB,#fff)}
+  .handoff h3{font-size:20px;font-family:var(--font-display);font-weight:400}
+  .handoff p{color:#334155;font-size:14px;line-height:1.55;margin:6px 0 14px;max-width:62ch}
+  .handoff .cta{display:inline-flex;align-items:center;gap:8px;background:var(--orange);color:#fff;font-weight:700;font-size:14px;text-decoration:none;padding:11px 18px;border-radius:100px}
+  .handoff .cta:hover{background:var(--orange-dk)}
+  .handoff .eyebrow{color:var(--orange);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+  .foot{color:var(--muted);font-size:11.5px;margin-top:30px;border-top:1px solid var(--line);padding-top:14px;line-height:1.5}
+  /* Modal */
+  .overlay{position:fixed;inset:0;background:rgba(20,32,60,.45);display:none;align-items:flex-start;justify-content:center;padding:34px 16px;overflow:auto;z-index:50}
+  .overlay.show{display:flex}
+  .modal{background:#fff;border-radius:14px;max-width:720px;width:100%;box-shadow:0 20px 60px rgba(15,30,60,.35);overflow:hidden}
+  .mhead{padding:18px 22px;border-bottom:1px solid var(--line);position:relative;background:linear-gradient(180deg,#F7FAFF,#fff)}
+  .mhead .eb{color:var(--orange);font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+  .mhead h2{margin:3px 0 2px;color:var(--navy);font-size:22px;font-family:var(--font-display);font-weight:400}
+  .mhead .pp{color:var(--muted);font-size:13px;line-height:1.5;max-width:60ch}
+  .mclose{position:absolute;top:14px;right:16px;border:none;background:#EEF1F6;color:var(--navy);width:30px;height:30px;border-radius:8px;font-size:17px;cursor:pointer;font-weight:700}
+  .mclose:hover{background:#E2E7F0}
+  .mbody{padding:16px 22px 8px;max-height:56vh;overflow:auto}
+  .fld{margin:12px 0}
+  .fld label{display:block;font-size:12.5px;font-weight:700;color:#374151;margin-bottom:4px}
+  .fld textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13.5px;font-family:inherit;resize:vertical;min-height:52px;color:var(--ink)}
+  .fld textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,117,182,.12)}
+  .cklist{margin:8px 0 4px;background:#F7F9FC;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .cktitle{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .ckrow{display:flex;gap:9px;align-items:flex-start;padding:5px 2px;cursor:pointer;font-size:13.5px}
+  .ckrow input{margin-top:2px;width:16px;height:16px;flex:0 0 auto;accent-color:var(--green)}
+  .upl{margin:14px 0 6px;border:1.5px dashed #C4CBD6;border-radius:10px;padding:12px 14px;background:#FCFDFE}
+  .upl .lab{font-size:12.5px;font-weight:700;color:#374151;margin-bottom:6px}
+  .upl input[type=file]{font-size:12.5px}
+  .upl .filed{margin-top:8px;font-size:12.5px;color:var(--green);font-weight:700;display:flex;align-items:center;gap:8px}
+  .upl .clr{border:none;background:#F1D9D6;color:var(--crit);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;font-weight:700}
+  .mfoot{padding:13px 22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#FBFCFE}
+  .mstatus{font-size:13px;font-weight:700}
+  .mstatus.ok{color:var(--green)}.mstatus.open{color:var(--muted)}
+  .mfoot .done-btn{border:none;border-radius:9px;padding:10px 18px;font-weight:700;font-size:13.5px;cursor:pointer;background:var(--navy);color:#fff}
+  .mfoot .done-btn:hover{background:#16294d}
+  .srcnote{font-size:11px;color:var(--muted);margin-top:6px}
+  @media(max-width:900px){.app{grid-template-columns:1fr}.side{position:static;height:auto}.kpis{grid-template-columns:1fr 1fr}}
+</style>
+<style>
+  /* ---- Auth / account / coach additions ---- */
+  .authwrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(180deg,#eef3f7,#f8fafc)}
+  .authcard{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);max-width:410px;width:100%;padding:30px 30px 26px}
+  .authbrand{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+  .authbrand .logo{width:42px;height:42px;border-radius:10px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+  .authbrand b{color:var(--navy);font-family:var(--font-display);font-weight:400;font-size:17px;line-height:1.05}
+  .authbrand span{color:var(--orange);font-size:11px;font-weight:700}
+  .authcard h2{font-family:var(--font-display);font-weight:400;color:var(--navy);font-size:23px;margin:6px 0 2px}
+  .authcard .lead{color:var(--muted);font-size:13px;margin-bottom:16px}
+  .field{margin:10px 0}
+  .field label{display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:4px}
+  .field input{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit}
+  .field input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(252,101,2,.12)}
+  .authbtn{width:100%;border:none;border-radius:100px;background:var(--orange);color:#fff;font-weight:700;font-size:14.5px;padding:12px;cursor:pointer;margin-top:12px}
+  .authbtn:hover{background:var(--orange-dk)}
+  .authbtn:disabled{opacity:.6;cursor:default}
+  .authtoggle{margin-top:14px;text-align:center;font-size:13px;color:var(--muted)}
+  .authtoggle a{color:var(--orange);font-weight:700;cursor:pointer;text-decoration:none}
+  .authmsg{margin-top:12px;font-size:12.5px;border-radius:8px;padding:9px 11px;display:none}
+  .authmsg.err{display:block;background:var(--critbg);color:var(--crit)}
+  .authmsg.ok{display:block;background:#E9F6EE;color:var(--green)}
+  .acctbar{display:flex;align-items:center;gap:10px}
+  .acctbar .who{font-size:12px;color:var(--muted);text-align:right;line-height:1.2}
+  .acctbar .who b{color:var(--navy);font-size:13px}
+  .rolechip{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:var(--icy);color:var(--navy)}
+  .rolechip.coach{background:#FBE7D5;color:var(--orange-dk)}
+  .logout{border:1px solid var(--line);background:#fff;color:var(--navy);font-weight:600;font-size:12.5px;border-radius:8px;padding:7px 12px;cursor:pointer}
+  .logout:hover{background:#f3f6fb}
+  .syncdot{font-size:11px;color:var(--muted);margin-left:8px}
+  .syncdot.saving{color:var(--orange-dk)}
+  .syncdot.saved{color:var(--green)}
+  /* Coach */
+  .cohort{width:100%;border-collapse:collapse;font-size:13.5px}
+  .cohort th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding:8px 10px;border-bottom:2px solid #EEF1F6}
+  .cohort td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .cohort tr:hover td{background:#F7F9FC;cursor:pointer}
+  .cohort .cname{font-weight:700;color:var(--navy)}
+  .cohort .cmail{color:var(--muted);font-size:11.5px}
+  .minibar{height:8px;width:150px;background:#E7EBF2;border-radius:6px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:8px}
+  .minibar > i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--orange-dk))}
+  .stagepips{display:flex;gap:3px}
+  .pip{width:26px;height:7px;border-radius:3px;background:#E7EBF2}
+  .pip.on{background:var(--navy)}
+  .backbtn{border:1px solid var(--line);background:#fff;color:var(--navy);font-weight:600;font-size:12.5px;border-radius:8px;padding:7px 12px;cursor:pointer;margin-bottom:14px}
+  .backbtn:hover{background:#f3f6fb}
+  .ro-note{font-size:12px;color:var(--muted);background:#F7F9FC;border:1px solid var(--line);border-radius:8px;padding:8px 11px;margin:10px 0}
+  .empty{color:var(--muted);font-size:13.5px;padding:20px;text-align:center}
+  .hide{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- ===================== AUTH VIEW ===================== -->
+<div id="authView" class="authwrap hide">
+  <div class="authcard">
+    <div class="authbrand"><div class="logo">CFA</div><div><b>Corporate Freedom Accelerator</b><br><span>Vertical Motion</span></div></div>
+    <h2 id="authTitle">Welcome back</h2>
+    <div class="lead" id="authLead">Log in to continue your 8-week sprint.</div>
+    <div id="signupOnly" class="hide">
+      <div class="field"><label>Your name</label><input id="suName" type="text" placeholder="Jane Founder" autocomplete="name"></div>
+      <div class="field"><label>Business name (optional)</label><input id="suBiz" type="text" placeholder="Acme Advisory"></div>
+    </div>
+    <div class="field"><label>Email</label><input id="auEmail" type="email" placeholder="you@email.com" autocomplete="email"></div>
+    <div class="field"><label>Password</label><input id="auPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="authbtn" id="authBtn" onclick="doAuth()">Log in</button>
+    <div class="authmsg" id="authMsg"></div>
+    <div class="authtoggle" id="authToggle">New here? <a onclick="toggleAuth()">Create an account</a></div>
+  </div>
+</div>
+
+<!-- ===================== CLIENT / APP VIEW ===================== -->
+<div id="appView" class="app hide">
+  <aside class="side">
+    <div class="brand"><div class="logo">CFA</div><div><b>Corporate Freedom Accelerator</b><br><span>Vertical Motion</span></div></div>
+    <div class="pill">The 8-Week Sprint · 43 Steps</div>
+    <div class="ring-wrap"><svg id="ring" width="132" height="132" viewBox="0 0 132 132"></svg><div class="ring-label">Complete</div></div>
+    <h4>Stages</h4>
+    <div id="navstages"></div>
+    <button class="btn" onclick="resetAll()">Reset my progress</button>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div><h1><span id="hname">Your Venture</span> · Corporate Freedom Accelerator</h1>
+      <div class="sub">Your progress through the Corporate Freedom Accelerator — 39 worksheets plus 4 companion steps. Click any step to fill it in or load a completed copy.<span class="syncdot" id="syncdot"></span></div></div>
+      <div class="acctbar">
+        <div class="who"><b id="acctName">—</b><br><span id="acctEmail"></span></div>
+        <button class="logout" onclick="doLogout()">Log out</button>
+      </div>
+    </div>
+    <div class="topbar" style="margin-top:10px">
+      <input class="nameinput" id="bizname" placeholder="Your business name" oninput="setName(this.value)"/>
+    </div>
+    <div class="next" id="nextbanner"></div>
+    <div class="bar"><div class="fill" id="fill" style="width:0%"></div></div>
+    <div class="bar-scale"><span>Foundations</span><span>Validation · Sales · Delivery · Marketing</span><span>Scale-ready</span></div>
+    <div class="kpis">
+      <div class="card" id="kOverall"><div class="t">Overall complete</div><div class="v" id="vOverall">0<small>%</small></div></div>
+      <div class="card"><div class="t">Steps done</div><div class="v" id="vTasks">0<small>/43</small></div></div>
+      <div class="card" id="kCrit" style="border-left-color:var(--crit)"><div class="t">Critical done</div><div class="v" id="vCrit">0<small>/9</small></div></div>
+      <div class="card"><div class="t">Current stage</div><div class="v" id="vStage" style="font-size:15px">Stage 1</div></div>
+    </div>
+    <div class="panel">
+      <h3>Progress by stage</h3>
+      <div class="hint">How far you are through each stage. The dashed ring is complete (100%).</div>
+      <div class="radar-wrap"><svg id="radar" width="440" height="400" viewBox="0 0 440 400"></svg></div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--crit)"></span>Critical - never skip</span>
+        <span><span class="dot" style="background:var(--high)"></span>High</span>
+        <span><span class="dot" style="background:var(--supp)"></span>Supporting</span>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>The full checklist</h3>
+      <div class="hint">39 CFA worksheets plus 4 companion steps (marked <i>Companion step</i>). Click any step to open it, fill it in inline (saved to your account) <b>or</b> load your completed copy. A step only checks off once it's finished or a completed file is loaded.</div>
+      <div id="tasklist"></div>
+    </div>
+    <div class="foot">
+      <b>Corporate Freedom Accelerator</b> · Vertical Motion. Your progress is saved to your account and synced across devices.
+      <br>© 2026.
+    </div>
+  </main>
+</div>
+
+<!-- ===================== COACH VIEW ===================== -->
+<div id="coachView" class="app hide">
+  <aside class="side">
+    <div class="brand"><div class="logo">CFA</div><div><b>Corporate Freedom Accelerator</b><br><span>Coach dashboard</span></div></div>
+    <div class="pill">Cohort progress</div>
+    <div class="ring-wrap"><svg id="cring" width="132" height="132" viewBox="0 0 132 132"></svg><div class="ring-label">Cohort avg</div></div>
+    <h4>Stages</h4>
+    <div id="cnavstages"></div>
+    <button class="btn" onclick="loadCoach()">Refresh</button>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div><h1>Coach Dashboard</h1><div class="sub" id="coachSub">Your cohort's progress across the Corporate Freedom Accelerator.</div></div>
+      <div class="acctbar">
+        <div class="who"><b id="cAcctName">—</b> <span class="rolechip coach">Coach</span><br><span id="cAcctEmail"></span></div>
+        <button class="logout" onclick="doLogout()">Log out</button>
+      </div>
+    </div>
+    <div class="kpis">
+      <div class="card"><div class="t">Clients</div><div class="v" id="cCount">0</div></div>
+      <div class="card"><div class="t">Cohort avg complete</div><div class="v" id="cAvg">0<small>%</small></div></div>
+      <div class="card"><div class="t">Active this week</div><div class="v" id="cActive">0</div></div>
+      <div class="card"><div class="t">Reached Scale</div><div class="v" id="cScale">0</div></div>
+    </div>
+    <div class="panel" id="cohortPanel">
+      <h3>Clients</h3>
+      <div class="hint">Click any client to see their full checklist and answers (read-only).</div>
+      <div id="cohortWrap"></div>
+    </div>
+    <div class="panel hide" id="clientDetail">
+      <button class="backbtn" onclick="closeClient()">← Back to cohort</button>
+      <h3 id="cdTitle">Client</h3>
+      <div class="ro-note">Read-only view of this client's worksheets. Click a step to see what they entered.</div>
+      <div class="bar"><div class="fill" id="cdFill" style="width:0%"></div></div>
+      <div id="cdTasklist" style="margin-top:14px"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ===================== WORKSHEET MODAL ===================== -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeWS()">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="mhead">
+      <button class="mclose" onclick="closeWS()" aria-label="Close">&times;</button>
+      <div class="eb" id="mEyebrow"></div>
+      <h2 id="mTitle"></h2>
+      <div class="pp" id="mPurpose"></div>
+    </div>
+    <div class="mbody" id="mBody"></div>
+    <div class="mfoot">
+      <div class="mstatus" id="mStatus"></div>
+      <button class="done-btn" onclick="closeWS()">Save &amp; close</button>
+    </div>
+  </div>
+</div>
+<script>
+const WS={
+ "01":{title:"Expertise Inventory Worksheet",phase:"Pre-Work",file:"01_Expertise_Inventory_Worksheet.docx",
+   purpose:"Turn the skills, problems, and repeated advice you already have into monetizable Value Zones.",
+   fields:["Professional skills inventory (skill · years · proficiency 1-10)","Problems you've solved (problem → measurable outcome)","Advice people ask you for repeatedly (topic · who asks)","Top 3 Value Zones (core skill / problem it solves / outcome / enjoyment)","Draft transformation statement: “I help [WHO] go from [BEFORE] to [AFTER] through [MECHANISM].”"],
+   checklist:["Listed 10+ professional skills","Documented 5+ problems with measurable outcomes","Identified 4+ advice topics","Completed all 3 Value Zone analyses","Wrote draft transformation statement"]},
+ "02":{title:"Market Scan Scorecard",phase:"Pre-Work",file:"02_Market_Scan_Scorecard.docx",
+   purpose:"Score 3 markets on pain, ability to pay, urgency, competition and access — pick the hungriest.",
+   fields:["Market #1 — name, buyer, core problem","Market #1 scores (pain / pay / urgency / competition / access) — total /50","Market #2 — name, buyer, problem, scores /50","Market #3 — name, buyer, problem, scores /50","Chosen market + why"],
+   checklist:["Scored 3 markets across all 5 criteria","Calculated total /50 for each","Selected the highest-potential market"]},
+ "03":{title:"Participant Intake Form",phase:"Pre-Work",file:"03_Intake_Form.docx",
+   purpose:"Establish your baseline: situation, income goals, business model, time, constraints and definition of success.",
+   fields:["Current situation (title, industry, comp band, employment status)","Income goals ($ by end of program / in 12 months / to replace salary / to feel safe leaving)","Desired business model(s) + what energizes vs drains you","Hours/week available + constraints & risks","What financial freedom / success looks like — and your commitment"],
+   checklist:["Completed situation & compensation","Set specific income goals","Chose a business-model direction","Stated time availability & constraints","Defined success + commitment"]},
+ "04":{title:"Runway & Walkaway Calculator",phase:"Pre-Work",file:"04_Runway_Walkaway_Calculator.docx",
+   purpose:"Know your runway (how many months you can survive) and your walkaway number (minimum monthly revenue to leave).",
+   fields:["Total liquid assets (A) $","Total monthly expenses (B) $","Total monthly income (C) $","Basic runway = A / (B − C) — months","Risk-adjusted runway — months","Walkaway number (minimum monthly revenue) $"],
+   checklist:["Totaled liquid assets","Totaled true monthly expenses","Calculated basic & risk-adjusted runway","Set your walkaway number"]},
+ "05":{title:"Offer Hypothesis Canvas",phase:"Kickoff",file:"05_Offer_Hypothesis_Canvas.docx",
+   purpose:"Draft your first offer: Problem → Outcome → Mechanism, delivery model, and a pricing hypothesis. Refine before Week 1 — no conversations yet.",
+   fields:["WHO — your ideal client","THE PROBLEM","THE OUTCOME / dream state","THE MECHANISM — how you deliver","Delivery model + pricing hypothesis","Anticipated objections → your initial responses","Transformation statement"],
+   checklist:["Defined WHO","Defined the problem & outcome","Defined mechanism & delivery model","Set a pricing hypothesis","Wrote a transformation statement"]},
+ "06":{title:"Validation Conversation Guide",phase:"Kickoff → used Week 2",file:"06_Validation_Conversation_Guide.docx",
+   purpose:"Who to talk to, what to ask, and what to listen for. Received at Kickoff but used AFTER Week 1 to run 5+ conversations.",
+   fields:["Who to talk to (list 5+ prospects)","Key questions to ask","What to listen for (real signals vs politeness)","Learning capture — notes per conversation"],
+   checklist:["Identified 5+ people to talk to","Prepared the question list","Noted what to listen for","Captured learnings from 5+ conversations"]},
+ "07":{title:"Experiment Mindset Framework",phase:"Kickoff",file:"07_Experiment_Mindset_Framework.docx",
+   purpose:"Reframe fear into experiments. Commit to imperfect action, the 24-hour rule, and the 5-conversation minimum.",
+   fields:["Fears currently blocking action","Reframe each fear as an experiment / test","Your commitment (5-conversation minimum, 24-hour rule)"],
+   checklist:["Named the fears blocking action","Reframed each as an experiment","Committed to imperfect action"]},
+ "08":{title:"Risk Assessment Matrix",phase:"Kickoff",file:"08_Risk_Assessment_Matrix.docx",
+   purpose:"Plot your top 3 fears on a probability × impact matrix and assign a mitigation to each. Completed before committing to Offer v1.",
+   fields:["Top 3 fears / risks","Each plotted: likelihood (H/L) × impact (H/L) → quadrant","Mitigation strategy per risk","Regret-minimization reflection"],
+   checklist:["Listed your top 3 fears","Plotted each on the 2×2 matrix","Assigned a mitigation per risk"]},
+ "09":{title:"Decision Velocity Framework",phase:"Week 1",file:"09_Decision_Velocity_Framework.docx",
+   purpose:"Apply the 70% rule and reversible-decision thinking to stop refining and commit to Offer v1.",
+   fields:["The decision I'm committing to (Offer v1)","I will review this decision on: (date)","What would make me change course"],
+   checklist:["Applied the 70% rule / stopped over-refining","Committed the decision","Set a review date & change triggers"]},
+ "10":{title:"Offer Architecture Template",phase:"Week 1",file:"10_Offer_Architecture_Template (1).docx",
+   purpose:"Finalize Offer v1: full Problem → Outcome → Mechanism, the Value Equation, and pricing logic. This is the exact offer you will validate.",
+   fields:["Problem architecture (incl. cost of inaction)","Outcome architecture + transformation statement","Mechanism / framework steps","Value Equation (dream outcome · likelihood · time · effort)","Pricing architecture & logic"],
+   checklist:["Problem clearly defined with cost of inaction","Dream outcome is specific & measurable","Transformation statement complete","Mechanism / framework steps defined","Price set with value logic"]},
+ "11":{title:"Conversation Debrief Template",phase:"Week 2",file:"11_Conversation_Debrief_Template.docx",
+   purpose:"Synthesize patterns from your 5+ validation conversations; refine ICP and note offer iterations.",
+   fields:["Conversation summaries","Patterns recognized","ICP refinement","Offer iteration notes","Top 3 insights to share at the Week 2 call"],
+   checklist:["Summarized each conversation","Identified patterns","Refined your ICP","Noted offer iterations"]},
+ "12":{title:"PMF Validation Checklist",phase:"Week 2",file:"12_PMF_Validation_Checklist.docx",
+   purpose:"Score your product-market-fit evidence and make an informed go / iterate / pivot decision.",
+   fields:["PMF evidence score","Red flags present?","Go / No-Go decision","Confidence check"],
+   checklist:["Scored your PMF evidence","Reviewed the red-flag checklist","Made a go / iterate / pivot decision"]},
+ "13":{title:"Money Mindset Reframe",phase:"Week 3",file:"13_Money_Mindset_Reframe.docx",
+   purpose:"Audit your money beliefs and adopt charging-is-helping and value-based pricing before sales calls.",
+   fields:["Money beliefs audit (belief · agree 1-10)","Reframes that landed for you","Your new money mantras + commitment"],
+   checklist:["Completed the beliefs audit","Adopted the value-based reframes","Wrote your new money mantras"]},
+ "14":{title:"Pre-Call Ritual Guide",phase:"Week 3",file:"14_Pre_Call_Ritual_Guide.docx",
+   purpose:"Design your 10-minute pre-call ritual — physical reset, mindset priming, prospect review, intention setting.",
+   fields:["Physical reset (2 min)","Mindset priming (3 min)","Prospect review (3 min)","Intention setting (2 min)"],
+   checklist:["Defined your pre-call ritual","Used it before a real call"]},
+ "15":{title:"Sales Conversation Framework",phase:"Week 3",file:"15_Sales_Conversation_Framework.docx",
+   purpose:"Learn the Rapport → Discovery → Diagnosis → Prescription → Close structure and use it in 2+ conversations.",
+   fields:["Discovery questions (situation / problem / impact / desired outcome)","Diagnosis language","Prescription — how your offer maps to their problem","Close language + notes from real conversations"],
+   checklist:["Internalized the 5-phase structure","Prepared your discovery questions","Used it in 2+ sales conversations"]},
+ "16":{title:"Objection Handling Guide",phase:"Week 3",file:"16_Objection_Handling_Guide.docx",
+   purpose:"Prepare A.C.E. responses to the top objections and track what you hear in real conversations.",
+   fields:["“Too expensive” — your response","“No time” — your response","“Need to think about it” — your response","“Tried before” / “send me info” — your response","Objection practice tracker (heard / overcome / notes)"],
+   checklist:["Prepared responses to the top 5 objections","Practiced the A.C.E. framework","Logged objections you heard"]},
+ "17":{title:"Identity Shift Framework",phase:"Week 4",file:"17_Identity_Shift_Framework.docx",
+   purpose:"Move from employee to entrepreneur identity; write your new identity statement.",
+   fields:["Employee patterns to drop","Entrepreneur patterns to adopt","Your new identity statement"],
+   checklist:["Completed the identity inventory","Wrote your new identity statement"]},
+ "18":{title:"Imposter Syndrome Toolkit",phase:"Week 4",file:"18_Imposter_Syndrome_Toolkit.docx",
+   purpose:"Reality-check imposter thoughts and start an evidence journal you can reach for when doubt hits.",
+   fields:["Imposter thoughts → reality checks","Evidence that I belong (journal)","Your 5-minute emergency protocol"],
+   checklist:["Reframed your imposter thoughts","Started an evidence journal"]},
+ "19":{title:"Delivery MVP Template",phase:"Week 4",file:"19_Delivery_MVP_Template.docx",
+   purpose:"Design the simplest viable delivery: 4-6 milestones, call cadence, and a standard agenda.",
+   fields:["Clear start & end points","4-6 key milestones (week / milestone / client deliverable)","Call frequency, duration & standard agenda","What the client needs to do"],
+   checklist:["Defined clear start & end points","Mapped 4-6 milestones","Decided call frequency & duration","Created a standard call agenda","Set client expectations"]},
+ "20":{title:"Client Onboarding Checklist",phase:"Week 4",file:"20_Client_Onboarding_Checklist.docx",
+   purpose:"Run a great first 48 hours: welcome, intake, expectations, communication rhythm and a first win.",
+   fields:["Onboarding action items by timing","Welcome email (draft)","First-win plan"],
+   checklist:["Built your onboarding checklist","Drafted a welcome email","Planned the first client win"]},
+ "21":{title:"Momentum Framework",phase:"Week 5",file:"21_Momentum_Framework.docx",
+   purpose:"Balance the delivery hat vs the growth hat; set minimum viable growth activities and a non-negotiable growth block.",
+   fields:["Delivery hat vs growth hat split","Minimum viable growth activities (activity / time / frequency)","Weekly momentum scorecard","Your non-negotiable growth block"],
+   checklist:["Set your minimum growth activities","Designed your weekly rhythm","Booked a non-negotiable growth block"]},
+ "22":{title:"Life Architecture Audit",phase:"Week 5",file:"22_Life_Architecture_Audit.docx",
+   purpose:"Mid-program alignment check across life areas; identify misalignments and course corrections.",
+   fields:["Life-area scores (1-10)","Impact of the business on each area (+ / − / =)","Course corrections"],
+   checklist:["Scored all life areas","Identified misalignments","Set course corrections"]},
+ "23":{title:"Testimonial Request Script",phase:"Week 5",file:"23_Testimonial_Request_Script.docx",
+   purpose:"Ask for and capture 1+ testimonial using the guided questions and email template.",
+   fields:["Who to ask + when","Guided questions to send","Email request (draft)","Testimonial capture log"],
+   checklist:["Identified who to ask","Sent request(s)","Captured 1+ testimonial"]},
+ "24":{title:"Messaging Refinement Worksheet",phase:"Week 5",file:"24_Messaging_Refinement_Worksheet.docx",
+   purpose:"Mine your clients' own language; write 10+ new hooks and an upgraded one-liner.",
+   fields:["Client language — their problem words","Client language — their desired-outcome words","10+ upgraded hooks","Upgraded one-liner"],
+   checklist:["Collected client language","Wrote 10+ hooks","Upgraded your one-liner"]},
+ "25":{title:"Scaling Architecture Audit",phase:"Week 6",file:"25_Scaling_Architecture_Audit.docx",
+   purpose:"Score business areas, run the 3× test, and spot what breaks at higher volume.",
+   fields:["Business-area scores (1-10) + priority","3× test — what breaks at 3× volume","Bottlenecks + possible solutions","Systems priority list (system / target date)"],
+   checklist:["Scored all business areas","Ran the 3× test","Listed the systems to build"]},
+ "26":{title:"Bottleneck Identification Framework",phase:"Week 6",file:"26_Bottleneck_Identification_Framework.docx",
+   purpose:"Diagnose your #1 constraint and plan its removal.",
+   fields:["Bottleneck diagnostic by business stage","Your #1 constraint analysis","Removal plan"],
+   checklist:["Diagnosed constraints by stage","Named your #1 bottleneck","Planned its removal"]},
+ "27":{title:"Offer v2 Refinement Template",phase:"Week 6",file:"27_Offer_v2_Refinement_Template.docx",
+   purpose:"Evolve the offer from real client data: what stays, what goes, what's added.",
+   fields:["Offer v1 review — what I promised","Client data analysis","Offer v2 design (stays / goes / added)","Value Equation check"],
+   checklist:["Reviewed Offer v1","Analyzed client data","Designed Offer v2"]},
+ "28":{title:"Delivery System Documentation",phase:"Week 6",file:"28_Delivery_System_Documentation.docx",
+   purpose:"Document the client journey end-to-end: milestones, standard agenda, tools and SOPs.",
+   fields:["Client journey map (phase / milestone / deliverable / your action)","Standard call agenda","Tools & templates checklist"],
+   checklist:["Mapped the client journey end-to-end","Documented a standard agenda","Listed tools & templates"]},
+ "29":{title:"Client Acquisition SOP",phase:"Week 7",file:"29_Client_Acquisition_SOP.docx",
+   purpose:"Make outreach repeatable: client path map, daily activities and weekly targets.",
+   fields:["Client path map (stage / process / tools & scripts)","Daily acquisition activities (activity / target / time)","Weekly acquisition targets (metric / target / actual)"],
+   checklist:["Documented your client path map","Set daily activities","Set weekly targets"]},
+ "30":{title:"KPI Dashboard Template",phase:"Week 7",file:"30_KPI_Dashboard_Template.docx",
+   purpose:"Track 5-7 leading & lagging metrics plus conversion rates, reviewed weekly.",
+   fields:["Leading indicators + targets","Lagging indicators + targets","Conversion rates","Weekly review answers"],
+   checklist:["Chose 5-7 KPIs","Set targets","Set up weekly tracking"]},
+ "31":{title:"Weekly Rhythm Template",phase:"Week 7",file:"31_Weekly_Rhythm_Template.docx",
+   purpose:"Design your CEO week: non-negotiables vs flexible time, time blocks, and a planning ritual.",
+   fields:["Weekly structure (morning / afternoon / evening)","Non-negotiable weekly activities","Weekly planning ritual + this week's top 3 priorities"],
+   checklist:["Designed your weekly structure","Set your non-negotiables","Blocked the calendar"]},
+ "32":{title:"CEO Operating Identity",phase:"Week 7",file:"32_CEO_Operating_Identity.docx",
+   purpose:"Audit time spent ON vs IN the business and claim CEO time blocks.",
+   fields:["Time audit (ON vs IN the business)","CEO time blocks to protect","The CEO question — your answer"],
+   checklist:["Completed your time audit","Claimed CEO time blocks"]},
+ "33":{title:"Client Retention Playbook",phase:"Week 7",file:"33_Client_Retention_Playbook.docx",
+   purpose:"Design retention touchpoints and a continuation offer to raise lifetime value.",
+   fields:["Retention strategies + your implementation","Your continuation offer","The retention conversation (script)"],
+   checklist:["Designed retention touchpoints","Defined a continuation offer"]},
+ "34":{title:"Referral System Template",phase:"Week 7",file:"34_Referral_System_Template.docx",
+   purpose:"Install a referral ask into your process with scripts and tracking.",
+   fields:["When to ask (good vs bad times)","Referral ask script","Make it easy to refer (assets)","Referral tracking"],
+   checklist:["Wrote a referral ask script","Installed the ask into your process"]},
+ "35":{title:"90-Day Growth Plan",phase:"Week 8",file:"35_90_Day_Growth_Plan.docx",
+   purpose:"Set 90-day targets, milestones and a month-by-month breakdown for the next quarter.",
+   fields:["Current state assessment","90-day targets","Month-by-month breakdown"],
+   checklist:["Assessed your current state","Set 90-day targets","Built a month-by-month plan"]},
+ "36":{title:"Scale Lever Analysis",phase:"Week 8",file:"36_Scale_Lever_Analysis.docx",
+   purpose:"Analyze the 5 scale levers and pick your #1 to double down on.",
+   fields:["More leads — opportunity","Better conversion — opportunity","Higher price — opportunity","More purchases — opportunity","Leverage — opportunity","Your #1 scale lever"],
+   checklist:["Analyzed all 5 levers","Chose your #1 lever"]},
+ "37":{title:"Risk Assessment for Growth",phase:"Week 8",file:"37_Risk_Assessment_Growth.docx",
+   purpose:"Map growth risks with likelihood and mitigation; name your top 3 with contingencies.",
+   fields:["Growth risks (category / likelihood / mitigation)","Your top 3 risks + contingencies"],
+   checklist:["Mapped your growth risks","Named your top 3 + contingencies"]},
+ "38":{title:"Long-Term Vision Worksheet",phase:"Week 8",file:"38_Long_Term_Vision_Worksheet.docx",
+   purpose:"Set 12-month, 3-year and 10-year horizons and connect the vision to daily action.",
+   fields:["Identity consolidation","12-month / 3-year / 10-year vision","Beliefs for the next level"],
+   checklist:["Wrote all three horizons","Connected the vision to daily action"]},
+ "39":{title:"Program Completion Checklist",phase:"Week 8",file:"39_Program_Completion_Checklist.docx",
+   purpose:"Final audit: verify milestones, capture results, and list the assets you now own. Celebrate and choose your next path.",
+   fields:["8-week achievements + your results","Strategic assets you now own","Operational assets you now own","Final reflection + what's next"],
+   checklist:["Verified all milestones","Listed the assets you now own","Chose your next path"]},
+ /* Companion steps — carried over from the original checklist; no formal CFA worksheet */
+ "C1":{title:"Mentors & Honest Advisors",phase:"Foundations",companion:true,
+   purpose:"Line up 2-3 mentors or advisors who will tell you the truth as you build — not just cheer you on.",
+   fields:["Your mentors / advisors (name · what they help with)","How you'll stay in contact (cadence)"],
+   checklist:["Identified 2+ mentors / honest advisors","Set a cadence to check in with them"]},
+ "C2":{title:"Money Hygiene",phase:"Delivery",companion:true,
+   purpose:"Set up clean money systems now, before revenue scales: a separate business account, simple bookkeeping, and a plan to set aside for taxes.",
+   fields:["Business banking (bank / account set up)","Bookkeeping method (tool / who)","Tax set-aside plan (% and where)"],
+   checklist:["Opened a separate business account","Chose a bookkeeping method","Set a tax set-aside plan"]},
+ "C3":{title:"First Delegation or Hire",phase:"Scale",companion:true,
+   purpose:"Plan the first thing to get off your plate — the task or role to hand off first, and to whom.",
+   fields:["First task / role to delegate","Who will take it on (or how you'll find them)","What 'good' looks like (success criteria)"],
+   checklist:["Identified the first thing to delegate","Named who will take it on","Defined success criteria"]},
+ "C4":{title:"Legal, Compliance & Baseline Risk",phase:"Scale",companion:true,
+   purpose:"Cover the baseline that protects you: entity / structure, a client agreement, and any insurance or licenses you need.",
+   fields:["Business entity / structure","Client contract / agreement in place","Insurance & licenses needed"],
+   checklist:["Confirmed entity / structure","Have a client contract in place","Reviewed insurance & licenses"]}
+};
+
+/* ---------- Stage structure: CFA's 6 stages, all 39 worksheets ---------- */
+const STAGES=[
+ {key:"Foundations",short:"Found.",name:"Stage 1 · Foundations",tasks:[
+   {id:1,t:"Expertise Inventory",tier:"HIGH",dom:"Strategy",doc:"01",group:"Readiness (pre-work)"},
+   {id:2,t:"Market Scan Scorecard",tier:"HIGH",dom:"GTM",doc:"02",group:"Readiness (pre-work)"},
+   {id:3,t:"Participant Intake & Goals",tier:"CRITICAL",dom:"Leadership",doc:"03",group:"Readiness (pre-work)"},
+   {id:4,t:"Runway & Walkaway Number",tier:"CRITICAL",dom:"Financial",doc:"04",group:"Readiness (pre-work)"},
+   {id:5,t:"Mentors & Honest Advisors",tier:"SUPPORTING",dom:"Leadership",doc:"C1",group:"Readiness (pre-work)"},
+   {id:6,t:"Offer Hypothesis Canvas",tier:"CRITICAL",dom:"GTM",doc:"05",group:"Offer architecture (kickoff → week 1)"},
+   {id:7,t:"Experiment Mindset",tier:"SUPPORTING",dom:"Leadership",doc:"07",group:"Offer architecture (kickoff → week 1)"},
+   {id:8,t:"Risk Assessment Matrix",tier:"HIGH",dom:"Leadership",doc:"08",group:"Offer architecture (kickoff → week 1)"},
+   {id:9,t:"Decision Velocity",tier:"HIGH",dom:"Leadership",doc:"09",group:"Offer architecture (kickoff → week 1)"},
+   {id:10,t:"Offer v1 — Offer Architecture",tier:"CRITICAL",dom:"GTM",doc:"10",group:"Offer architecture (kickoff → week 1)"}]},
+ {key:"Validation",short:"Valid.",name:"Stage 2 · Validation",tasks:[
+   {id:11,t:"Validation Conversation Guide",tier:"CRITICAL",dom:"GTM",doc:"06"},
+   {id:12,t:"Conversation Debrief",tier:"HIGH",dom:"GTM",doc:"11"},
+   {id:13,t:"PMF Validation Checklist",tier:"CRITICAL",dom:"Strategy",doc:"12"}]},
+ {key:"Sales",short:"Sales",name:"Stage 3 · Sales",tasks:[
+   {id:14,t:"Money Mindset Reframe",tier:"SUPPORTING",dom:"Leadership",doc:"13"},
+   {id:15,t:"Pre-Call Ritual",tier:"SUPPORTING",dom:"Leadership",doc:"14"},
+   {id:16,t:"Sales Conversation Framework",tier:"CRITICAL",dom:"GTM",doc:"15"},
+   {id:17,t:"Objection Handling",tier:"HIGH",dom:"GTM",doc:"16"}]},
+ {key:"Delivery",short:"Deliv.",name:"Stage 4 · Delivery",tasks:[
+   {id:18,t:"Identity Shift",tier:"SUPPORTING",dom:"Leadership",doc:"17"},
+   {id:19,t:"Imposter Syndrome Toolkit",tier:"SUPPORTING",dom:"Leadership",doc:"18"},
+   {id:20,t:"Delivery MVP",tier:"HIGH",dom:"Systems",doc:"19"},
+   {id:21,t:"Client Onboarding",tier:"HIGH",dom:"Systems",doc:"20"},
+   {id:22,t:"Money Hygiene",tier:"HIGH",dom:"Financial",doc:"C2"}]},
+ {key:"Marketing",short:"Mktg.",name:"Stage 5 · Marketing",tasks:[
+   {id:23,t:"Momentum Framework",tier:"HIGH",dom:"Leadership",doc:"21",group:"Momentum & messaging (week 5)"},
+   {id:24,t:"Life Architecture Audit",tier:"SUPPORTING",dom:"Leadership",doc:"22",group:"Momentum & messaging (week 5)"},
+   {id:25,t:"Testimonial Request",tier:"HIGH",dom:"GTM",doc:"23",group:"Momentum & messaging (week 5)"},
+   {id:26,t:"Messaging Refinement",tier:"HIGH",dom:"GTM",doc:"24",group:"Momentum & messaging (week 5)"},
+   {id:27,t:"Scaling Architecture Audit",tier:"HIGH",dom:"Systems",doc:"25",group:"Marketing systems (week 6)"},
+   {id:28,t:"Bottleneck Identification",tier:"HIGH",dom:"Systems",doc:"26",group:"Marketing systems (week 6)"},
+   {id:29,t:"Offer v2 Refinement",tier:"HIGH",dom:"GTM",doc:"27",group:"Marketing systems (week 6)"},
+   {id:30,t:"Delivery System Documentation",tier:"HIGH",dom:"Systems",doc:"28",group:"Marketing systems (week 6)"}]},
+ {key:"Scale",short:"Scale",name:"Stage 6 · Scale",tasks:[
+   {id:31,t:"Client Acquisition SOP",tier:"CRITICAL",dom:"Systems",doc:"29",group:"CEO operating system (week 7)"},
+   {id:32,t:"KPI Dashboard",tier:"HIGH",dom:"Data",doc:"30",group:"CEO operating system (week 7)"},
+   {id:33,t:"Weekly Rhythm",tier:"HIGH",dom:"Leadership",doc:"31",group:"CEO operating system (week 7)"},
+   {id:34,t:"CEO Operating Identity",tier:"SUPPORTING",dom:"Leadership",doc:"32",group:"CEO operating system (week 7)"},
+   {id:35,t:"Client Retention Playbook",tier:"HIGH",dom:"GTM",doc:"33",group:"CEO operating system (week 7)"},
+   {id:36,t:"Referral System",tier:"SUPPORTING",dom:"GTM",doc:"34",group:"CEO operating system (week 7)"},
+   {id:37,t:"First Delegation or Hire",tier:"SUPPORTING",dom:"People",doc:"C3",group:"CEO operating system (week 7)"},
+   {id:38,t:"90-Day Growth Plan",tier:"HIGH",dom:"Strategy",doc:"35",group:"90-day plan & transition (week 8)"},
+   {id:39,t:"Scale Lever Analysis",tier:"HIGH",dom:"Strategy",doc:"36",group:"90-day plan & transition (week 8)"},
+   {id:40,t:"Risk Assessment for Growth",tier:"SUPPORTING",dom:"Risk",doc:"37",group:"90-day plan & transition (week 8)"},
+   {id:41,t:"Legal, Compliance & Baseline Risk",tier:"SUPPORTING",dom:"Risk",doc:"C4",group:"90-day plan & transition (week 8)"},
+   {id:42,t:"Long-Term Vision",tier:"SUPPORTING",dom:"Strategy",doc:"38",group:"90-day plan & transition (week 8)"},
+   {id:43,t:"Program Completion Checklist",tier:"CRITICAL",dom:"Cross",doc:"39",group:"90-day plan & transition (week 8)"}]}
+];
+
+
+/* ================= CONFIG ================= */
+/* Filled in during Supabase setup. The anon key is a *publishable* key — safe in a public repo.
+   Security is enforced server-side by row-level security policies. */
+const SUPABASE_URL="https://rmjlslgfrflbqkwxtidm.supabase.co";
+const SUPABASE_ANON_KEY="sb_publishable_3ooOi3enMiJZpEV6em-Hmw_GmjNmO0f";
+
+/* ================= DERIVED ================= */
+const ALL=STAGES.flatMap(s=>s.tasks.map(t=>({...t,stage:s.key})));
+const TOTAL=ALL.length, CRIT_TOTAL=ALL.filter(t=>t.tier==="CRITICAL").length;
+const cls=t=>t==="CRITICAL"?"crit":t==="HIGH"?"high":"supp";
+function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+/* ================= STATE ================= */
+let sb=null, ME=null, PROFILE=null;
+let PROG={};                 // current client's progress: {doc:{fields,checks,file_name}}
+let AUTHMODE="login";        // 'login' | 'signup'
+let COACH_CLIENTS=[];        // [{profile, prog, doneN, pct, stagePct}]
+
+/* ================= COMPLETION LOGIC ================= */
+function docState(doc,prog){prog=prog||PROG;return prog[doc]||{fields:{},checks:{},file_name:null};}
+function wsComplete(doc,prog){const w=WS[doc],s=docState(doc,prog);if(!w)return false;if(s.file_name)return true;
+  if(w.checklist&&w.checklist.length)return w.checklist.every((_,i)=>s.checks&&s.checks[i]);
+  return w.fields.every((_,i)=>((s.fields||{})[i]||"").trim());}
+function wsStarted(doc,prog){const s=docState(doc,prog);if(s.file_name)return true;
+  const anyF=s.fields&&Object.values(s.fields).some(v=>(v||"").trim());
+  const anyC=s.checks&&Object.values(s.checks).some(Boolean);return !!(anyF||anyC);}
+function countsFor(prog){
+  const doneN=ALL.filter(t=>wsComplete(t.doc,prog)).length;
+  const pct=Math.round(doneN/TOTAL*100);
+  const critDone=ALL.filter(t=>t.tier==="CRITICAL"&&wsComplete(t.doc,prog)).length;
+  const stagePct=STAGES.map(s=>{const d=s.tasks.filter(t=>wsComplete(t.doc,prog)).length;return Math.round(d/s.tasks.length*100);});
+  let cur=STAGES.length;for(let i=0;i<STAGES.length;i++){if(stagePct[i]<100){cur=i;break;}}
+  return {doneN,pct,critDone,stagePct,cur};
+}
+
+/* ================= SVG: ring + radar ================= */
+function ring(pct,elId){const R=54,C=2*Math.PI*R,off=C*(1-pct/100);const el=document.getElementById(elId);if(!el)return;
+  el.innerHTML=
+  `<circle cx="66" cy="66" r="${R}" fill="none" stroke="#EDEFF4" stroke-width="12"/>
+   <circle cx="66" cy="66" r="${R}" fill="none" stroke="#fc6502" stroke-width="12" stroke-linecap="round"
+     stroke-dasharray="${C}" stroke-dashoffset="${off}" transform="rotate(-90 66 66)" style="transition:stroke-dashoffset .4s"/>
+   <text x="66" y="62" text-anchor="middle" font-size="28" font-weight="800" fill="#081e2b">${pct}%</text>
+   <text x="66" y="82" text-anchor="middle" font-size="10" fill="#64748b">of ${TOTAL}</text>`;}
+function pt(cx,cy,r,i,n){const a=-Math.PI/2+i*2*Math.PI/n;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};}
+function polypts(cx,cy,r,n){let s=[];for(let i=0;i<n;i++){const p=pt(cx,cy,r,i,n);s.push(p.x+","+p.y);}return s.join(" ");}
+function radar(stagePct,pct){const cx=220,cy=195,R=140,n=STAGES.length;let g="";
+  [25,50,75,100].forEach(v=>{g+=`<polygon points="${polypts(cx,cy,R*v/100,n)}" fill="none" stroke="#E4E8EF" stroke-width="1"/>`;});
+  STAGES.forEach((s,i)=>{const p=pt(cx,cy,R,i,n);g+=`<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="#E4E8EF" stroke-width="1"/>`;
+    const lp=pt(cx,cy,R+24,i,n);g+=`<text x="${lp.x}" y="${lp.y}" text-anchor="middle" dominant-baseline="middle" font-size="12" font-weight="700" fill="#374151">${s.short}</text>`;
+    g+=`<text x="${lp.x}" y="${lp.y+14}" text-anchor="middle" font-size="10" fill="#9AA1AD">${stagePct[i]}%</text>`;});
+  g+=`<polygon points="${polypts(cx,cy,R,n)}" fill="none" stroke="#fc6502" stroke-width="1.5" stroke-dasharray="5 4" opacity=".8"/>`;
+  const pts=STAGES.map((s,i)=>pt(cx,cy,R*stagePct[i]/100,i,n));
+  g+=`<polygon points="${pts.map(p=>p.x+","+p.y).join(" ")}" fill="#081e2b" fill-opacity=".14" stroke="#081e2b" stroke-width="2.5"/>`;
+  pts.forEach(p=>{g+=`<circle cx="${p.x}" cy="${p.y}" r="4" fill="#fc6502"/>`;});
+  g+=`<text x="${cx}" y="${cy-2}" text-anchor="middle" font-size="30" font-weight="800" fill="#081e2b">${pct}%</text>`;
+  g+=`<text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="10" fill="#64748b">COMPLETE</text>`;
+  const el=document.getElementById('radar');if(el)el.innerHTML=g;}
+
+/* ================= CLIENT RENDER ================= */
+function checklistHTML(prog,onclickName){
+  let html="";
+  STAGES.forEach((s,i)=>{
+    const d=s.tasks.filter(t=>wsComplete(t.doc,prog)).length;
+    html+=`<div class="stage" id="stage${i}"><h4>${s.name}<span class="p">${d}/${s.tasks.length}</span></h4>`;
+    let lastGroup=null;
+    for(const t of s.tasks){
+      if(t.group&&t.group!==lastGroup){html+=`<div class="subgroup">${esc(t.group)}</div>`;lastGroup=t.group;}
+      const c=cls(t.tier);const complete=wsComplete(t.doc,prog);const started=!complete&&wsStarted(t.doc,prog);
+      const stateCls=complete?'done':(started?'part':'');const w=WS[t.doc];const s2=docState(t.doc,prog);
+      let note="";
+      if(complete){note=`<div class="statusnote ok">${s2.file_name?'Completed worksheet loaded ✓':'Worksheet complete ✓'}</div>`;}
+      else if(started){const cnt=(w.checklist||[]).filter((_,ix)=>(s2.checks||{})[ix]).length;note=`<div class="statusnote open">In progress — ${cnt}/${(w.checklist||[]).length} steps</div>`;}
+      const badge=w.companion?`Companion step · ${w.phase}`:`Doc ${t.doc} · ${w.phase}`;
+      html+=`<div class="item ${c} ${stateCls}" onclick="${onclickName}('${t.doc}')">
+        <div class="box">${complete?'✓':(started?'·':'')}</div>
+        <div><span class="txt"><span class="num" style="color:var(--${c})">${t.id}.</span>${esc(t.t)}
+          <span class="tag ${c}">${t.tier}</span><span class="wsbadge">${badge}</span></span>
+          <div class="dom">${t.dom}</div>${note}</div></div>`;
+    }
+    html+=`</div>`;});
+  return html;
+}
+function render(){
+  const {doneN,pct,critDone,stagePct,cur}=countsFor(PROG);
+  ring(pct,'ring'); radar(stagePct,pct);
+  document.getElementById('fill').style.width=pct+"%";
+  document.getElementById('vOverall').innerHTML=pct+"<small>%</small>";
+  document.getElementById('vTasks').innerHTML=doneN+"<small>/"+TOTAL+"</small>";
+  document.getElementById('vCrit').innerHTML=critDone+"<small>/"+CRIT_TOTAL+"</small>";
+  document.getElementById('kCrit').style.borderLeftColor=(critDone===CRIT_TOTAL)?"var(--green)":"var(--crit)";
+  document.getElementById('vStage').textContent=cur===STAGES.length?"Complete":("Stage "+(cur+1));
+  const nextCrit=ALL.find(t=>t.tier==="CRITICAL"&&!wsComplete(t.doc,PROG));
+  const nb=document.getElementById('nextbanner');
+  if(nextCrit){nb.className="next";nb.innerHTML=`Your next critical step &rarr; <b>#${nextCrit.id} ${esc(nextCrit.t)}</b>`;}
+  else{nb.className="next done";nb.innerHTML=`All ${CRIT_TOTAL} critical steps are complete. Strong foundation - keep going.`;}
+  document.getElementById('navstages').innerHTML=STAGES.map((s,i)=>`<div class="navrow" onclick="jumpStage(${i})"><span>${s.short}</span><span class="sc">${stagePct[i]}%</span></div>`).join("");
+  document.getElementById('tasklist').innerHTML=checklistHTML(PROG,'openWS');
+}
+function jumpStage(i){const el=document.getElementById('stage'+i);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+
+/* ================= WORKSHEET MODAL ================= */
+let CURDOC=null, RO=false, ROPROG=null;
+function openWS(doc,opts){opts=opts||{};RO=!!opts.ro;ROPROG=opts.prog||null;CURDOC=doc;
+  const w=WS[doc];const s=docState(doc,RO?ROPROG:PROG);
+  document.getElementById('mEyebrow').textContent=w.companion?`Companion step · ${w.phase}`:`Doc ${doc} · ${w.phase}`;
+  document.getElementById('mTitle').textContent=w.title;
+  document.getElementById('mPurpose').textContent=w.purpose;
+  const dis=RO?'disabled':'';
+  let b="";
+  b+=`<div style="font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:4px 0 2px">${RO?'Their answers':'Fill in inline'}</div>`;
+  w.fields.forEach((f,i)=>{const val=esc((s.fields||{})[i]||"");
+    b+=`<div class="fld"><label>${esc(f)}</label><textarea data-i="${i}" ${dis} oninput="onField(${i},this.value)" placeholder="${RO?'—':'Type your answer…'}">${val}</textarea></div>`;});
+  if(w.checklist&&w.checklist.length){
+    b+=`<div class="cklist"><div class="cktitle">Completion checklist — all checked marks this step done</div>`;
+    w.checklist.forEach((c,i)=>{const ck=(s.checks||{})[i]?'checked':'';
+      b+=`<label class="ckrow"><input type="checkbox" ${ck} ${dis} onchange="onCheck(${i},this.checked)"><span>${esc(c)}</span></label>`;});
+    b+=`</div>`;}
+  const fd=s.file_name;
+  if(RO){
+    b+=`<div class="upl"><div class="lab">Completed file</div><div class="srcnote">${fd?('✓ Loaded: '+esc(fd)):'No completed file loaded.'}</div></div>`;
+  }else{
+    const srcnote=w.companion
+      ? `This is a companion step — there's no formal CFA worksheet for it. Fill the notes above or load any file you used; either one checks it off.`
+      : `Source worksheet: ${esc(w.file)} — in your CFA Client Materials. Loading a completed copy checks this step off. (Files are recorded by name; the file itself isn't uploaded.)`;
+    b+=`<div class="upl"><div class="lab">${w.companion?'Have a file for this? Load it':'Already finished it? Load your completed worksheet'}</div>
+      <input type="file" onchange="onFile(this)" accept=".doc,.docx,.pdf,.png,.jpg,.jpeg,.xlsx,.csv,.txt,.pages,.key">
+      ${fd?`<div class="filed">✓ Loaded: ${esc(fd)} <button class="clr" onclick="clearFile()">remove</button></div>`:''}
+      <div class="srcnote">${srcnote}</div></div>`;
+  }
+  document.getElementById('mBody').innerHTML=b;
+  document.querySelector('.mfoot').style.display=RO?'none':'';
+  updateModalStatus();
+  document.getElementById('overlay').classList.add('show');
+}
+function onField(i,v){if(RO)return;const s=(PROG[CURDOC]=PROG[CURDOC]||{fields:{},checks:{},file_name:null});s.fields=s.fields||{};s.fields[i]=v;updateModalStatus();queueSave(CURDOC);}
+function onCheck(i,v){if(RO)return;const s=(PROG[CURDOC]=PROG[CURDOC]||{fields:{},checks:{},file_name:null});s.checks=s.checks||{};s.checks[i]=v;updateModalStatus();queueSave(CURDOC);}
+function onFile(inp){if(RO||!inp.files||!inp.files[0])return;const s=(PROG[CURDOC]=PROG[CURDOC]||{fields:{},checks:{},file_name:null});s.file_name=inp.files[0].name;queueSave(CURDOC);openWS(CURDOC);}
+function clearFile(){if(RO)return;const s=(PROG[CURDOC]=PROG[CURDOC]||{fields:{},checks:{},file_name:null});s.file_name=null;queueSave(CURDOC);openWS(CURDOC);}
+function updateModalStatus(){const doc=CURDOC,w=WS[doc],s=docState(doc,RO?ROPROG:PROG);const el=document.getElementById('mStatus');if(!el)return;
+  if(wsComplete(doc,RO?ROPROG:PROG)){el.className="mstatus ok";el.textContent=s.file_name?"Complete ✓ — completed worksheet loaded":"Complete ✓ — all steps done";}
+  else{const n=(w.checklist||[]).filter((_,i)=>(s.checks||{})[i]).length,tot=(w.checklist||[]).length;
+    el.className="mstatus open";el.textContent=tot?`${n} of ${tot} steps done — finish the checklist or load a completed file`:"Fill the fields or load a completed file";}}
+function closeWS(){document.getElementById('overlay').classList.remove('show');const wasRO=RO;CURDOC=null;RO=false;ROPROG=null;if(!wasRO)render();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&CURDOC)closeWS();});
+
+/* ================= SAVE (debounced upsert) ================= */
+let saveTimers={};
+function setSync(state){const el=document.getElementById('syncdot');if(!el)return;
+  if(state==='saving'){el.className='syncdot saving';el.textContent='• saving…';}
+  else if(state==='saved'){el.className='syncdot saved';el.textContent='• all changes saved';}
+  else{el.className='syncdot';el.textContent='';}}
+function queueSave(doc){setSync('saving');clearTimeout(saveTimers[doc]);saveTimers[doc]=setTimeout(()=>saveDoc(doc),600);}
+async function saveDoc(doc){
+  const s=PROG[doc]||{fields:{},checks:{},file_name:null};
+  const row={user_id:ME.id,doc_key:doc,fields:s.fields||{},checks:s.checks||{},file_name:s.file_name||null,complete:wsComplete(doc,PROG),updated_at:new Date().toISOString()};
+  const {error}=await sb.from('progress').upsert(row,{onConflict:'user_id,doc_key'});
+  if(error){setSync('');console.error('save error',error);alert('Could not save — '+error.message);}
+  else setSync('saved');
+}
+let nameTimer=null;
+function setName(v){document.getElementById('hname').textContent=v.trim()||"Your Venture";setSync('saving');clearTimeout(nameTimer);
+  nameTimer=setTimeout(async()=>{const {error}=await sb.from('profiles').update({business_name:v}).eq('id',ME.id);setSync(error?'':'saved');},600);}
+async function resetAll(){if(!confirm("Clear ALL your worksheet progress? This cannot be undone."))return;
+  const {error}=await sb.from('progress').delete().eq('user_id',ME.id);
+  if(error){alert('Could not reset — '+error.message);return;}
+  PROG={};render();setSync('saved');}
+
+/* ================= AUTH ================= */
+function toggleAuth(){AUTHMODE=AUTHMODE==='login'?'signup':'login';
+  document.getElementById('signupOnly').classList.toggle('hide',AUTHMODE!=='signup');
+  document.getElementById('authTitle').textContent=AUTHMODE==='signup'?'Create your account':'Welcome back';
+  document.getElementById('authLead').textContent=AUTHMODE==='signup'?'Start your 8-week sprint. Your progress saves to your account.':'Log in to continue your 8-week sprint.';
+  document.getElementById('authBtn').textContent=AUTHMODE==='signup'?'Create account':'Log in';
+  document.getElementById('authToggle').innerHTML=AUTHMODE==='signup'?'Already have an account? <a onclick="toggleAuth()">Log in</a>':'New here? <a onclick="toggleAuth()">Create an account</a>';
+  authMsg('');}
+function authMsg(t,ok){const el=document.getElementById('authMsg');el.className='authmsg'+(t?(ok?' ok':' err'):'');el.textContent=t;}
+async function doAuth(){
+  const email=document.getElementById('auEmail').value.trim();
+  const pass=document.getElementById('auPass').value;
+  if(!email||!pass){authMsg('Enter your email and password.');return;}
+  const btn=document.getElementById('authBtn');btn.disabled=true;
+  try{
+    if(AUTHMODE==='signup'){
+      const full_name=document.getElementById('suName').value.trim();
+      const business_name=document.getElementById('suBiz').value.trim();
+      const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name,business_name}}});
+      if(error)throw error;
+      if(!data.session){authMsg('Account created. Check your email to confirm, then log in.',true);AUTHMODE='login';toggleAuth();return;}
+    }else{
+      const {error}=await sb.auth.signInWithPassword({email,password:pass});
+      if(error)throw error;
+    }
+  }catch(e){authMsg(e.message||'Something went wrong.');}
+  finally{btn.disabled=false;}
+}
+async function doLogout(){await sb.auth.signOut();location.reload();}
+
+/* ================= ROUTING ================= */
+function show(view){['authView','appView','coachView'].forEach(v=>document.getElementById(v).classList.toggle('hide',v!==view));}
+async function routeSession(session){
+  if(!session){ME=null;PROFILE=null;show('authView');return;}
+  ME=session.user;
+  let {data:prof}=await sb.from('profiles').select('*').eq('id',ME.id).maybeSingle();
+  if(!prof){ // fallback if trigger hasn't fired
+    await sb.from('profiles').insert({id:ME.id,email:ME.email}).select();
+    ({data:prof}=await sb.from('profiles').select('*').eq('id',ME.id).maybeSingle());
+  }
+  PROFILE=prof||{role:'client'};
+  if(PROFILE.role==='coach'){show('coachView');
+    document.getElementById('cAcctName').textContent=PROFILE.full_name||ME.email;
+    document.getElementById('cAcctEmail').textContent=ME.email;
+    loadCoach();
+  }else{
+    show('appView');
+    document.getElementById('acctName').textContent=PROFILE.full_name||'—';
+    document.getElementById('acctEmail').textContent=ME.email;
+    document.getElementById('bizname').value=PROFILE.business_name||'';
+    document.getElementById('hname').textContent=(PROFILE.business_name||'').trim()||'Your Venture';
+    await loadProgress();
+  }
+}
+async function loadProgress(){
+  const {data,error}=await sb.from('progress').select('doc_key,fields,checks,file_name').eq('user_id',ME.id);
+  PROG={};
+  if(!error&&data)data.forEach(r=>{PROG[r.doc_key]={fields:r.fields||{},checks:r.checks||{},file_name:r.file_name||null};});
+  render();setSync('saved');
+}
+
+/* ================= COACH ================= */
+async function loadCoach(){
+  document.getElementById('cohortWrap').innerHTML='<div class="empty">Loading cohort…</div>';
+  const {data:clients,error:e1}=await sb.from('profiles').select('*').eq('role','client').order('created_at',{ascending:true});
+  const {data:rows,error:e2}=await sb.from('progress').select('user_id,doc_key,fields,checks,file_name,updated_at');
+  if(e1||e2){document.getElementById('cohortWrap').innerHTML='<div class="empty">Could not load cohort: '+esc((e1||e2).message)+'</div>';return;}
+  const byUser={};(rows||[]).forEach(r=>{(byUser[r.user_id]=byUser[r.user_id]||{})[r.doc_key]={fields:r.fields||{},checks:r.checks||{},file_name:r.file_name||null,updated_at:r.updated_at};});
+  COACH_CLIENTS=(clients||[]).map(p=>{
+    const prog=byUser[p.id]||{};
+    const {doneN,pct,stagePct,cur}=countsFor(prog);
+    let last=null;Object.values(prog).forEach(d=>{if(d.updated_at&&(!last||d.updated_at>last))last=d.updated_at;});
+    return {profile:p,prog,doneN,pct,stagePct,cur,last};
+  });
+  renderCohort();
+}
+function weekAgo(){return Date.now()-7*24*3600*1000;}
+function renderCohort(){
+  const n=COACH_CLIENTS.length;
+  const avg=n?Math.round(COACH_CLIENTS.reduce((a,c)=>a+c.pct,0)/n):0;
+  const active=COACH_CLIENTS.filter(c=>c.last&&new Date(c.last).getTime()>weekAgo()).length;
+  const scale=COACH_CLIENTS.filter(c=>c.cur>=5).length;
+  document.getElementById('cCount').textContent=n;
+  document.getElementById('cAvg').innerHTML=avg+"<small>%</small>";
+  document.getElementById('cActive').textContent=active;
+  document.getElementById('cScale').textContent=scale;
+  ring(avg,'cring');
+  // stage averages in side nav
+  const stageAvg=STAGES.map((s,i)=>n?Math.round(COACH_CLIENTS.reduce((a,c)=>a+c.stagePct[i],0)/n):0);
+  document.getElementById('cnavstages').innerHTML=STAGES.map((s,i)=>`<div class="navrow"><span>${s.short}</span><span class="sc">${stageAvg[i]}%</span></div>`).join("");
+  if(!n){document.getElementById('cohortWrap').innerHTML='<div class="empty">No clients have signed up yet. Share the dashboard link — new signups appear here automatically.</div>';return;}
+  let h='<table class="cohort"><thead><tr><th>Client</th><th>Progress</th><th>Stage</th><th>Stages</th><th>Last active</th></tr></thead><tbody>';
+  COACH_CLIENTS.forEach((c,idx)=>{
+    const nm=esc(c.profile.full_name||c.profile.business_name||c.profile.email||'Client');
+    const stagePips=c.stagePct.map(p=>`<span class="pip ${p===100?'on':''}"></span>`).join('');
+    const last=c.last?new Date(c.last).toLocaleDateString():'—';
+    const stageLbl=c.cur===STAGES.length?'Complete':('Stage '+(c.cur+1));
+    h+=`<tr onclick="openClient(${idx})">
+      <td><div class="cname">${nm}</div><div class="cmail">${esc(c.profile.email||'')}</div></td>
+      <td><span class="minibar"><i style="width:${c.pct}%"></i></span>${c.pct}% · ${c.doneN}/${TOTAL}</td>
+      <td>${stageLbl}</td>
+      <td><div class="stagepips">${stagePips}</div></td>
+      <td>${last}</td></tr>`;
+  });
+  h+='</tbody></table>';
+  document.getElementById('cohortWrap').innerHTML=h;
+}
+function openClient(idx){const c=COACH_CLIENTS[idx];
+  document.getElementById('cohortPanel').classList.add('hide');
+  const dt=document.getElementById('clientDetail');dt.classList.remove('hide');
+  document.getElementById('cdTitle').textContent=(c.profile.full_name||c.profile.email||'Client')+(c.profile.business_name?(' · '+c.profile.business_name):'');
+  document.getElementById('cdFill').style.width=c.pct+"%";
+  const wrap=document.getElementById('cdTasklist');
+  wrap.dataset.idx=idx;
+  wrap.innerHTML=checklistHTML(c.prog,'openClientDoc');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function openClientDoc(doc){const idx=+document.getElementById('cdTasklist').dataset.idx;const c=COACH_CLIENTS[idx];openWS(doc,{ro:true,prog:c.prog});}
+function closeClient(){document.getElementById('clientDetail').classList.add('hide');document.getElementById('cohortPanel').classList.remove('hide');}
+
+/* ================= BOOT ================= */
+(function boot(){
+  if(SUPABASE_URL.indexOf('__')===0){
+    document.body.innerHTML='<div style="font-family:sans-serif;max-width:640px;margin:60px auto;padding:24px;border:1px solid #e2e8f0;border-radius:12px"><h2 style="color:#081e2b">Almost there</h2><p style="color:#475569">This dashboard needs its Supabase project URL and anon key wired in before it can run. Add them to the CONFIG block at the top of the script.</p></div>';
+    return;
+  }
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  sb.auth.getSession().then(({data})=>routeSession(data.session));
+  sb.auth.onAuthStateChange((_e,session)=>{ if(_e==='SIGNED_IN'||_e==='SIGNED_OUT'||_e==='INITIAL_SESSION') routeSession(session); });
+})();
+</script>
+</body>
+</html>
