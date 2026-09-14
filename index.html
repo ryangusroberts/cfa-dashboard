@@ -11,51 +11,56 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   /* Brand system matched to vmleader.com (Vertical Motion) */
-  :root{--navy:#081e2b;--navy-mid:#0d2d40;--navy-soft:#153347;--slate:#5B7C99;--blue:#5B7C99;
+  :root{--navy:#081e2b;--navy-mid:#0d2d40;--navy-soft:#153347;--slate:#5B7C99;--blue:#0693d8;--blue-dk:#0575ab;--blue-lt:#7ec5ea;
     --orange:#fc6502;--orange-dk:#d95400;--icy:#CFE8EF;
-    --ink:#081e2b;--muted:#64748b;--line:#e2e8f0;--bg:#f8fafc;--card:#fff;
+    --ink:#0f2436;--muted:#64748b;--line:#e6ebf2;--bg:#eef2f7;--card:#fff;
     --crit:#C0392B;--high:#B8860B;--supp:#7A828E;--green:#2E7D46;
     --critbg:#FBE9E7;--highbg:#FBF3DC;--suppbg:#EEF1F5;
     --font-display:'DM Serif Display',Georgia,serif;--font-body:'Inter',system-ui,-apple-system,Segoe UI,Arial,sans-serif;
-    --shadow:0 1px 4px rgba(8,30,43,.07),0 4px 20px rgba(8,30,43,.06);}
+    --shadow:0 1px 3px rgba(8,30,43,.06),0 8px 24px rgba(8,30,43,.06);--shadow-hi:0 24px 60px rgba(8,30,43,.16);--glow:radial-gradient(900px 480px at 50% -12%,rgba(6,147,216,.28),rgba(6,147,216,0) 62%);}
   *{box-sizing:border-box}
   body{margin:0;font-family:var(--font-body);color:var(--ink);background:var(--bg)}
   .app{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
-  .side{background:#fff;border-right:1px solid var(--line);padding:22px 18px;position:sticky;top:0;height:100vh;overflow:auto}
-  .brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
-  .logo{width:38px;height:38px;border-radius:9px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
-  .brand b{color:var(--navy);font-size:15px;line-height:1.1;font-family:var(--font-display);font-weight:400}.brand span{color:var(--orange);font-size:11px;font-weight:700;letter-spacing:.03em}
-  .pill{margin:14px 0 16px;background:var(--icy);color:var(--navy);font-weight:700;font-size:12.5px;border-radius:8px;padding:9px 12px}
+  .side{background:linear-gradient(180deg,#081e2b 0%,#0d2d40 100%);color:#c7d6e0;border-right:0;padding:22px 18px;position:sticky;top:0;height:100vh;overflow:auto;box-shadow:2px 0 30px rgba(8,30,43,.22)}
+  .brand{display:flex;align-items:center;gap:11px;margin-bottom:6px}
+  .logo{width:42px;height:42px;border-radius:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;overflow:hidden;flex:0 0 auto}
+  .logo img{width:30px;height:30px;object-fit:contain;display:block}
+  .brand b{color:#fff;font-size:15px;line-height:1.12;font-family:var(--font-display);font-weight:400}.brand span{color:var(--blue-lt);font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+  .pill{margin:16px 0 18px;background:rgba(6,147,216,.15);color:#bfe4f6;border:1px solid rgba(6,147,216,.28);font-weight:700;font-size:11px;letter-spacing:.04em;border-radius:100px;padding:8px 14px;text-align:center}
   .ring-wrap{display:flex;flex-direction:column;align-items:center;margin:6px 0}
-  .ring-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:6px}
-  .side h4{color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin:16px 0 8px}
-  .navrow{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-radius:8px;font-size:13px;color:#374151;cursor:pointer}
-  .navrow:hover{background:#F3F6FB}
-  .navrow .sc{font-weight:800;font-size:12.5px;color:var(--navy)}
-  .btn{margin-top:14px;width:100%;border:1px solid var(--line);background:#fff;color:var(--navy);font-weight:600;padding:9px;border-radius:8px;cursor:pointer;font-size:13px}
-  .btn:hover{background:#F3F6FB}
-  .main{padding:26px 30px 60px;max-width:1120px}
+  .ring-label{font-size:10px;color:#8fb0c4;text-transform:uppercase;letter-spacing:.1em;margin-top:6px}
+  .side h4{color:#6f92a8;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin:18px 0 8px}
+  .navrow{display:flex;justify-content:space-between;align-items:center;padding:8px 11px;border-radius:9px;font-size:13px;color:#c7d6e0;cursor:pointer;transition:background .15s}
+  .navrow:hover{background:rgba(255,255,255,.06)}
+  .navrow .sc{font-weight:800;font-size:12.5px;color:#fff}
+  .btn{margin-top:16px;width:100%;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);color:#dbe7ef;font-weight:600;padding:10px;border-radius:100px;cursor:pointer;font-size:12.5px;transition:background .15s}
+  .btn:hover{background:rgba(255,255,255,.1)}
+  .main{padding:30px 34px 64px;max-width:1140px}
   .topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
-  h1{font-size:28px;color:var(--navy);margin:0 0 3px;font-family:var(--font-display);font-weight:400}.sub{color:var(--muted);font-size:13px}
-  .nameinput{border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:14px;color:var(--navy);font-weight:600;min-width:200px}
-  .next{margin:18px 0 4px;border-radius:10px;padding:13px 16px;font-weight:600;font-size:14.5px;background:var(--critbg);color:var(--crit)}
-  .next.done{background:#E9F6EE;color:var(--green)}
-  .bar{height:12px;border-radius:8px;background:#E7EBF2;margin:16px 0 4px;overflow:hidden}
-  .bar .fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--orange-dk));border-radius:8px;transition:width .35s}
-  .bar-scale{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-bottom:18px}
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-  .card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--muted);border-radius:10px;padding:12px 14px;box-shadow:var(--shadow)}
-  .card .t{color:var(--muted);font-size:12.5px}.card .v{font-weight:800;font-size:22px;color:var(--navy);margin-top:2px}
+  h1{font-size:30px;color:var(--navy);margin:0 0 4px;font-family:var(--font-display);font-weight:400;letter-spacing:-.01em}.sub{color:var(--muted);font-size:13px;max-width:70ch}
+  .nameinput{border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;color:var(--navy);font-weight:600;min-width:200px;background:#fff}
+  .nameinput:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(6,147,216,.12)}
+  .next{margin:18px 0 4px;border-radius:12px;padding:13px 17px;font-weight:600;font-size:14px;background:var(--critbg);color:var(--crit);border:1px solid rgba(192,57,43,.16)}
+  .next.done{background:#E9F6EE;color:var(--green);border-color:rgba(46,125,70,.18)}
+  .bar{height:12px;border-radius:100px;background:#dde5ee;margin:16px 0 4px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(8,30,43,.08)}
+  .bar .fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--orange-dk));border-radius:100px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+  .bar-scale{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-bottom:20px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .card{position:relative;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--slate);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);transition:transform .18s,box-shadow .18s;overflow:hidden}
+  .card:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(8,30,43,.12)}
+  .card .ki{position:absolute;top:12px;right:12px;color:var(--slate);opacity:.5}
+  .card .t{color:var(--muted);font-size:12px;font-weight:600}.card .v{font-weight:800;font-size:26px;color:var(--navy);margin-top:3px;letter-spacing:-.02em}
   .card .v small{font-size:12px;font-weight:600;color:var(--muted)}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;box-shadow:var(--shadow);margin-top:22px}
-  .panel h3{margin:0 0 2px;color:var(--navy);font-size:18px;font-family:var(--font-display);font-weight:400}.panel .hint{color:var(--muted);font-size:12.5px;margin-bottom:10px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;box-shadow:var(--shadow);margin-top:22px}
+  .panel h3{margin:0 0 2px;color:var(--navy);font-size:19px;font-family:var(--font-display);font-weight:400}.panel .hint{color:var(--muted);font-size:12.5px;margin-bottom:12px}
   .radar-wrap{display:flex;justify-content:center}
   .legend{display:flex;gap:16px;justify-content:center;margin-top:8px;font-size:12px;color:var(--muted);flex-wrap:wrap}
   .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
   .stage{margin-top:10px}
   .stage h4{color:var(--navy);font-size:14.5px;margin:16px 0 6px;padding-bottom:6px;border-bottom:2px solid #EEF1F6;display:flex;justify-content:space-between}
   .stage h4 .p{font-size:12.5px;color:var(--muted);font-weight:600}
-  .subgroup{color:var(--blue);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin:12px 4px 2px}
+  .subgroup{color:var(--blue-dk);font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin:14px 4px 4px;display:flex;align-items:center;gap:7px}
+  .subgroup::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--blue);flex:0 0 auto}
   .item{display:flex;gap:11px;align-items:flex-start;padding:9px 6px;border-radius:8px;cursor:pointer;border-left:4px solid transparent}
   .item:hover{background:#F7F9FC}
   .item.crit{border-left-color:var(--crit)}.item.high{border-left-color:var(--high)}.item.supp{border-left-color:var(--supp)}
@@ -73,8 +78,8 @@
   .handoff{border-left:5px solid var(--navy);background:linear-gradient(180deg,#EEF3FB,#fff)}
   .handoff h3{font-size:20px;font-family:var(--font-display);font-weight:400}
   .handoff p{color:#334155;font-size:14px;line-height:1.55;margin:6px 0 14px;max-width:62ch}
-  .handoff .cta{display:inline-flex;align-items:center;gap:8px;background:var(--orange);color:#fff;font-weight:700;font-size:14px;text-decoration:none;padding:11px 18px;border-radius:100px}
-  .handoff .cta:hover{background:var(--orange-dk)}
+  .handoff .cta{display:inline-flex;align-items:center;gap:8px;background:var(--orange);color:#fff;font-weight:700;font-size:14px;text-decoration:none;padding:12px 20px;border-radius:100px;box-shadow:0 10px 24px rgba(252,101,2,.3);transition:transform .15s,box-shadow .15s}
+  .handoff .cta:hover{background:var(--orange-dk);transform:translateY(-2px);box-shadow:0 14px 30px rgba(252,101,2,.4)}
   .handoff .eyebrow{color:var(--orange);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
   .foot{color:var(--muted);font-size:11.5px;margin-top:30px;border-top:1px solid var(--line);padding-top:14px;line-height:1.5}
   /* Modal */
@@ -111,10 +116,11 @@
 </style>
 <style>
   /* ---- Auth / account / coach additions ---- */
-  .authwrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(180deg,#eef3f7,#f8fafc)}
-  .authcard{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);max-width:410px;width:100%;padding:30px 30px 26px}
+  .authwrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--glow),linear-gradient(160deg,#081e2b 0%,#0d2d40 100%);background-color:#081e2b}
+  .authcard{background:#fff;border:1px solid rgba(255,255,255,.5);border-radius:20px;box-shadow:0 32px 80px rgba(0,0,0,.45);max-width:415px;width:100%;padding:32px 32px 28px}
   .authbrand{display:flex;align-items:center;gap:11px;margin-bottom:14px}
-  .authbrand .logo{width:42px;height:42px;border-radius:10px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+  .authbrand .logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(160deg,#081e2b,#0d2d40);display:flex;align-items:center;justify-content:center;overflow:hidden;flex:0 0 auto}
+  .authbrand .logo img{width:32px;height:32px;object-fit:contain;display:block}
   .authbrand b{color:var(--navy);font-family:var(--font-display);font-weight:400;font-size:17px;line-height:1.05}
   .authbrand span{color:var(--orange);font-size:11px;font-weight:700}
   .authcard h2{font-family:var(--font-display);font-weight:400;color:var(--navy);font-size:23px;margin:6px 0 2px}
@@ -123,7 +129,8 @@
   .field label{display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:4px}
   .field input{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit}
   .field input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(252,101,2,.12)}
-  .authbtn{width:100%;border:none;border-radius:100px;background:var(--orange);color:#fff;font-weight:700;font-size:14.5px;padding:12px;cursor:pointer;margin-top:12px}
+  .authbtn{width:100%;border:none;border-radius:100px;background:var(--orange);color:#fff;font-weight:700;font-size:14.5px;padding:13px;cursor:pointer;margin-top:14px;box-shadow:0 8px 20px rgba(252,101,2,.32);transition:transform .15s,box-shadow .15s}
+  .authbtn:hover{background:var(--orange);transform:translateY(-2px);box-shadow:0 12px 26px rgba(252,101,2,.42)}
   .authbtn:hover{background:var(--orange-dk)}
   .authbtn:disabled{opacity:.6;cursor:default}
   .authtoggle{margin-top:14px;text-align:center;font-size:13px;color:var(--muted)}
@@ -148,7 +155,7 @@
   .cohort tr:hover td{background:#F7F9FC;cursor:pointer}
   .cohort .cname{font-weight:700;color:var(--navy)}
   .cohort .cmail{color:var(--muted);font-size:11.5px}
-  .minibar{height:8px;width:150px;background:#E7EBF2;border-radius:6px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:8px}
+  .minibar{height:8px;width:150px;background:#dde5ee;border-radius:100px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:8px}
   .minibar > i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--orange-dk))}
   .stagepips{display:flex;gap:3px}
   .pip{width:26px;height:7px;border-radius:3px;background:#E7EBF2}
@@ -207,11 +214,13 @@
   .scanmsg{font-size:12px;margin-top:8px;font-weight:600}
   .scanmsg.err{color:var(--crit)}.scanmsg.ok{color:var(--green)}.scanmsg.busy{color:var(--blue)}
   /* you-are-here banner */
-  .herenow{margin:14px 0 2px;border-radius:10px;padding:12px 15px;background:linear-gradient(180deg,#EEF3FB,#fff);border:1px solid var(--line);border-left:4px solid var(--navy)}
-  .herenow .eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--blue)}
-  .herenow .big{font-family:var(--font-display);font-weight:400;color:var(--navy);font-size:18px;margin:2px 0 2px}
-  .herenow .go{color:var(--orange-dk);font-weight:700;cursor:pointer}
-  .coachback{border:1px solid var(--line);background:#fff;color:var(--navy);font-weight:600;font-size:12.5px;border-radius:8px;padding:7px 12px;cursor:pointer}
+  .herenow{position:relative;overflow:hidden;margin:18px 0 4px;border-radius:16px;padding:18px 22px;background:var(--glow),linear-gradient(150deg,#081e2b,#0d2d40);background-color:#081e2b;box-shadow:0 16px 40px rgba(8,30,43,.28)}
+  .herenow .eyebrow{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-lt);display:flex;align-items:center;gap:7px}
+  .herenow .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 10px var(--blue)}
+  .herenow .big{font-family:var(--font-display);font-weight:400;color:#fff;font-size:22px;margin:6px 0 8px;line-height:1.15}
+  .herenow .go{display:inline-flex;align-items:center;gap:6px;background:var(--orange);color:#fff;font-weight:700;font-size:13px;border-radius:100px;padding:8px 16px;cursor:pointer;box-shadow:0 8px 18px rgba(252,101,2,.35);transition:transform .15s}
+  .herenow .go:hover{transform:translateY(-2px)}
+  .coachback{border:1px solid var(--line);background:#fff;color:var(--navy);font-weight:600;font-size:12.5px;border-radius:100px;padding:8px 14px;cursor:pointer}
   .coachback:hover{background:#f3f6fb}
   .viewbadge{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;background:#FBE7D5;color:var(--orange-dk);border-radius:20px;padding:2px 9px;margin-left:8px}
 </style>
@@ -221,7 +230,7 @@
 <!-- ===================== AUTH VIEW ===================== -->
 <div id="authView" class="authwrap hide">
   <div class="authcard">
-    <div class="authbrand"><div class="logo">CFA</div><div><b>Corporate Freedom Accelerator</b><br><span>Vertical Motion</span></div></div>
+    <div class="authbrand"><div class="logo"><img src="https://vmleader.com/vm-icon.png" alt="Vertical Motion"></div><div><b>Corporate Freedom Accelerator</b><br><span>Vertical Motion</span></div></div>
     <h2 id="authTitle">Welcome back</h2>
     <div class="lead" id="authLead">Log in to continue your 8-week sprint.</div>
     <div id="signupOnly" class="hide">
@@ -239,7 +248,7 @@
 <!-- ===================== CLIENT / APP VIEW ===================== -->
 <div id="appView" class="app hide">
   <aside class="side">
-    <div class="brand"><div class="logo">CFA</div><div><b>Corporate Freedom Accelerator</b><br><span>Vertical Motion</span></div></div>
+    <div class="brand"><div class="logo"><img src="https://vmleader.com/vm-icon.png" alt="Vertical Motion"></div><div><b>Corporate Freedom Accelerator</b><br><span>Vertical Motion</span></div></div>
     <div class="pill">The 8-Week Sprint · 43 Steps</div>
     <div class="ring-wrap"><svg id="ring" width="132" height="132" viewBox="0 0 132 132"></svg><div class="ring-label">Complete</div></div>
     <h4>Stages</h4>
@@ -264,10 +273,10 @@
     <div class="bar"><div class="fill" id="fill" style="width:0%"></div></div>
     <div class="bar-scale"><span>Foundations</span><span>Validation · Sales · Delivery · Marketing</span><span>Scale-ready</span></div>
     <div class="kpis">
-      <div class="card" id="kOverall"><div class="t">Overall complete</div><div class="v" id="vOverall">0<small>%</small></div></div>
-      <div class="card"><div class="t">Steps done</div><div class="v" id="vTasks">0<small>/43</small></div></div>
-      <div class="card" id="kCrit" style="border-left-color:var(--crit)"><div class="t">Critical done</div><div class="v" id="vCrit">0<small>/9</small></div></div>
-      <div class="card"><div class="t">Current stage</div><div class="v" id="vStage" style="font-size:15px">Stage 1</div></div>
+      <div class="card" id="kOverall" style="border-top-color:var(--orange)"><span class="ki"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 9 9"/></svg></span><div class="t">Overall complete</div><div class="v" id="vOverall">0<small>%</small></div></div>
+      <div class="card"><span class="ki"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h12M9 12h12M9 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg></span><div class="t">Steps done</div><div class="v" id="vTasks">0<small>/43</small></div></div>
+      <div class="card" id="kCrit" style="border-top-color:var(--crit)"><span class="ki"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span><div class="t">Critical done</div><div class="v" id="vCrit">0<small>/9</small></div></div>
+      <div class="card"><span class="ki"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span><div class="t">Current stage</div><div class="v" id="vStage" style="font-size:15px">Stage 1</div></div>
     </div>
     <div class="panel">
       <h3>Progress by stage</h3>
@@ -294,7 +303,7 @@
 <!-- ===================== COACH VIEW ===================== -->
 <div id="coachView" class="app hide">
   <aside class="side">
-    <div class="brand"><div class="logo">CFA</div><div><b>Corporate Freedom Accelerator</b><br><span>Coach dashboard</span></div></div>
+    <div class="brand"><div class="logo"><img src="https://vmleader.com/vm-icon.png" alt="Vertical Motion"></div><div><b>Corporate Freedom Accelerator</b><br><span>Coach dashboard</span></div></div>
     <div class="pill">Cohort progress</div>
     <div class="ring-wrap"><svg id="cring" width="132" height="132" viewBox="0 0 132 132"></svg><div class="ring-label">Cohort avg</div></div>
     <h4>Stages</h4>
@@ -311,10 +320,10 @@
       </div>
     </div>
     <div class="kpis">
-      <div class="card"><div class="t">Clients</div><div class="v" id="cCount">0</div></div>
-      <div class="card"><div class="t">Cohort avg complete</div><div class="v" id="cAvg">0<small>%</small></div></div>
-      <div class="card"><div class="t">Active this week</div><div class="v" id="cActive">0</div></div>
-      <div class="card"><div class="t">Reached Scale</div><div class="v" id="cScale">0</div></div>
+      <div class="card"><span class="ki"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></span><div class="t">Clients</div><div class="v" id="cCount">0</div></div>
+      <div class="card" style="border-top-color:var(--blue)"><span class="ki"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 9 9"/></svg></span><div class="t">Cohort avg complete</div><div class="v" id="cAvg">0<small>%</small></div></div>
+      <div class="card" style="border-top-color:var(--green)"><span class="ki"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></span><div class="t">Active this week</div><div class="v" id="cActive">0</div></div>
+      <div class="card" style="border-top-color:var(--orange)"><span class="ki"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6-6 6 6"/><path d="M6 20l6-6 6 6"/></svg></span><div class="t">Reached Scale</div><div class="v" id="cScale">0</div></div>
     </div>
     <div class="panel" id="cohortPanel">
       <h3>Clients</h3>
@@ -1193,7 +1202,7 @@ function countsFor(prog){
 
 /* ================= SVG ring + radar ================= */
 function ring(pct,elId){const R=54,C=2*Math.PI*R,off=C*(1-pct/100);const el=document.getElementById(elId);if(!el)return;
-  el.innerHTML=`<circle cx="66" cy="66" r="${R}" fill="none" stroke="#EDEFF4" stroke-width="12"/><circle cx="66" cy="66" r="${R}" fill="none" stroke="#fc6502" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}" transform="rotate(-90 66 66)" style="transition:stroke-dashoffset .4s"/><text x="66" y="62" text-anchor="middle" font-size="28" font-weight="800" fill="#081e2b">${pct}%</text><text x="66" y="82" text-anchor="middle" font-size="10" fill="#64748b">of ${TOTAL}</text>`;}
+  el.innerHTML=`<circle cx="66" cy="66" r="${R}" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="12"/><circle cx="66" cy="66" r="${R}" fill="none" stroke="#fc6502" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}" transform="rotate(-90 66 66)" style="transition:stroke-dashoffset .5s;filter:drop-shadow(0 0 6px rgba(252,101,2,.5))"/><text x="66" y="62" text-anchor="middle" font-size="28" font-weight="800" fill="#fff">${pct}%</text><text x="66" y="82" text-anchor="middle" font-size="10" fill="#8fb0c4">of ${TOTAL}</text>`;}
 function pt(cx,cy,r,i,n){const a=-Math.PI/2+i*2*Math.PI/n;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};}
 function polypts(cx,cy,r,n){let s=[];for(let i=0;i<n;i++){const p=pt(cx,cy,r,i,n);s.push(p.x+","+p.y);}return s.join(" ");}
 function radar(stagePct,pct){const cx=220,cy=195,R=140,n=STAGES.length;let g="";
@@ -1235,7 +1244,7 @@ function render(){
   document.getElementById('vOverall').innerHTML=pct+"<small>%</small>";
   document.getElementById('vTasks').innerHTML=doneN+"<small>/"+TOTAL+"</small>";
   document.getElementById('vCrit').innerHTML=critDone+"<small>/"+CRIT_TOTAL+"</small>";
-  document.getElementById('kCrit').style.borderLeftColor=(critDone===CRIT_TOTAL)?"var(--green)":"var(--crit)";
+  document.getElementById('kCrit').style.borderTopColor=(critDone===CRIT_TOTAL)?"var(--green)":"var(--crit)";
   document.getElementById('vStage').textContent=cur===STAGES.length?"Complete":("Stage "+(cur+1));
   const hn=document.getElementById('herenow');
   if(hn){
