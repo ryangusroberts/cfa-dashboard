@@ -61,6 +61,11 @@
   .stage h4 .p{font-size:12.5px;color:var(--muted);font-weight:600}
   .subgroup{color:var(--blue-dk);font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin:14px 4px 4px;display:flex;align-items:center;gap:7px}
   .subgroup::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--blue);flex:0 0 auto}
+  .wknotion{margin-left:auto;font-size:10.5px;font-weight:700;letter-spacing:.02em;text-transform:none;color:var(--blue-dk);background:var(--icy);border:1px solid var(--blue);border-radius:100px;padding:3px 10px;text-decoration:none;white-space:nowrap;transition:background .15s,color .15s}
+  .wknotion:hover{background:var(--blue);color:#fff}
+  .hnactions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .hngo{display:inline-flex;align-items:center;gap:6px;color:#fff;font-weight:700;font-size:12.5px;text-decoration:none;border:1px solid rgba(255,255,255,.35);border-radius:100px;padding:7px 14px;transition:background .15s}
+  .hngo:hover{background:rgba(255,255,255,.12)}
   .item{display:flex;gap:11px;align-items:flex-start;padding:9px 6px;border-radius:8px;cursor:pointer;border-left:4px solid transparent}
   .item:hover{background:#F7F9FC}
   .item.crit{border-left-color:var(--crit)}.item.high{border-left-color:var(--high)}.item.supp{border-left-color:var(--supp)}
@@ -838,79 +843,72 @@ const WS={
     {id:"upgraded",label:"Upgraded one-liner (using client language)",type:"textarea",req:true}]}
  ]},
 /* ===== Worksheets 25–34 (Week 6–7) ===== */
-"25":{title:"Scaling Architecture Audit",phase:"Week 6",file:"25_Scaling_Architecture_Audit.docx",
- purpose:"Find what breaks at scale before it becomes expensive. Score each business area's scalability, run the 3× test, and prioritize the systems to build.",
+"25":{title:"LinkedIn Authority Audit",phase:"Week 6",file:"CFA_Doc31_LinkedIn_Authority_Audit.docx",
+ purpose:"Score your LinkedIn profile, find the gaps, and fix them this week. For each element, rate yourself 1–5 and fix anything below a 4 before next week.",
  sections:[
-  {t:"Current state — scalability (1 = manual/fragile, 10 = systematized)",fields:[
-    {id:"a_acq",label:"Client acquisition",type:"scale",req:true},
-    {id:"a_sales",label:"Sales process",type:"scale",req:true},
-    {id:"a_onboard",label:"Client onboarding",type:"scale",req:true},
-    {id:"a_deliver",label:"Delivery / fulfillment",type:"scale",req:true},
-    {id:"a_comms",label:"Communication (scheduling, follow-up)",type:"scale",req:true},
-    {id:"a_pay",label:"Payment collection",type:"scale",req:true},
-    {id:"a_ref",label:"Testimonial / referral collection",type:"scale",req:true},
-    {id:"a_admin",label:"Admin (contracts, invoicing, records)",type:"scale",req:true}]},
-  {t:"The 3× test",help:"Imagine 3× your current client load tomorrow.",fields:[
-    {id:"break",label:"What would immediately break?",type:"textarea",req:true},
-    {id:"stop",label:"What would you have to stop doing personally?",type:"text"},
-    {id:"delegate",label:"What would need to be documented or delegated?",type:"text"}]},
-  {t:"Systems priority list",fields:[
-    {id:"systems",label:"Top systems to build/improve",type:"table",req:true,min:3,cols:[{k:"system",label:"System to build / improve"},{k:"date",label:"Target date"}]}]}
+  {t:"Profile audit — score each element (1–5)",help:"Does each element do its job? Fix anything under 4.",fields:[
+    {id:"s_headline",label:"Headline — leads with ICP transformation, not your title",type:"scale5",req:true},
+    {id:"s_about",label:"About section — opens with a hook and ends with a CTA",type:"scale5",req:true},
+    {id:"s_featured",label:"Featured section — case studies, testimonials or frameworks present",type:"scale5",req:true},
+    {id:"s_banner",label:"Banner image — clear CTA for your ICP",type:"scale5",req:true},
+    {id:"s_url",label:"Custom URL + calendar link — prospect can book without asking",type:"scale5",req:true}]},
+  {t:"SSI score",help:"From linkedin.com/sales/ssi — total is out of 100.",fields:[
+    {id:"ssi_total",label:"Current SSI score (out of 100)",type:"number",req:true},
+    {id:"ssi_brand",label:"Professional Brand (out of 25)",type:"number"},
+    {id:"ssi_people",label:"Finding the Right People (out of 25)",type:"number"},
+    {id:"ssi_engage",label:"Engagement (out of 25)",type:"number"},
+    {id:"ssi_rel",label:"Relationships (out of 25)",type:"number"}]},
+  {t:"Diagnosis",fields:[
+    {id:"weakest",label:"My weakest pillar",type:"text",req:true},
+    {id:"lowest",label:"Element with the lowest score (what needs fixing)",type:"text",req:true},
+    {id:"fix_action",label:"Specific action I'm taking to fix it",type:"textarea",req:true}]},
+  {t:"Drafts",fields:[
+    {id:"new_headline",label:"My new headline (draft)",type:"textarea",req:true},
+    {id:"about_hook",label:"My About-section opening hook (draft)",type:"textarea",req:true}]},
+  {t:"Priority fixes this week",fields:[
+    {id:"priority_fixes",label:"Top fixes I'll make before next week",type:"textarea",req:true}]}
  ]},
-"26":{title:"Bottleneck Identification Framework",phase:"Week 6",file:"26_Bottleneck_Identification_Framework.docx",
- purpose:"Find the one constraint limiting throughput (your lowest-flowing stage), diagnose the root cause, and commit to a single action to relieve it.",
+"26":{title:"ICP Connection Tracker",phase:"Week 6",file:"CFA_Doc32_ICP_Connection_Tracker.docx",
+ purpose:"Track weekly connection volume, acceptance rate, and conversations started. Target: 200 requests/week (40/day), 40%+ acceptance. Never pitch on the first message.",
  sections:[
-  {t:"Bottleneck diagnostic (1 = major blockage, 10 = flowing freely)",fields:[
-    {id:"d_lead",label:"Lead generation",type:"scale",req:true},
-    {id:"d_convo",label:"Starting conversations",type:"scale",req:true},
-    {id:"d_book",label:"Booking sales calls",type:"scale",req:true},
-    {id:"d_convert",label:"Converting calls to clients",type:"scale",req:true},
-    {id:"d_onboard",label:"Onboarding new clients",type:"scale",req:true},
-    {id:"d_deliver",label:"Delivering results",type:"scale",req:true},
-    {id:"d_ref",label:"Getting testimonials / referrals",type:"scale",req:true},
-    {id:"d_repeat",label:"Getting repeat / upsell business",type:"scale",req:true}]},
-  {t:"Your #1 constraint",fields:[
-    {id:"b_name",label:"My biggest bottleneck right now is",type:"text",req:true},
-    {id:"b_root",label:"Why is this a bottleneck? (root cause)",type:"textarea",req:true},
-    {id:"b_solutions",label:"Three possible solutions",type:"table",req:true,min:3,cols:[{k:"sol",label:"Possible solution"}]},
-    {id:"b_action",label:"The ONE action I'll take this week to address it",type:"text",req:true}]}
+  {t:"My ICP targeting criteria",fields:[
+    {id:"icp_titles",label:"Job titles I target",type:"text",req:true},
+    {id:"icp_company",label:"Company size / industry",type:"text",req:true},
+    {id:"icp_geo",label:"Geography",type:"text"},
+    {id:"icp_filter",label:"Active filter (e.g. posted in last 30 days)",type:"text"}]},
+  {t:"Weekly tracking",help:"Log each week. Acceptance target 40%+; if below, optimize your profile.",fields:[
+    {id:"weekly",label:"Weekly connection activity",type:"table",req:true,min:1,cols:[{k:"week",label:"Week of"},{k:"sent",label:"Requests sent"},{k:"accepted",label:"Accepted"},{k:"rate",label:"Acceptance %"},{k:"dms",label:"DMs initiated"},{k:"convos",label:"Conversations started"},{k:"ssi",label:"SSI Relationships score"}]}]},
+  {t:"DM log — value-first messages",help:"Never pitch first. Lead with a framework, insight or genuine question.",fields:[
+    {id:"dmlog",label:"Value-first DMs sent",type:"table",req:true,min:1,cols:[{k:"date",label:"Date"},{k:"who",label:"Name + title"},{k:"sent",label:"What I sent (value/insight/question)"},{k:"resp",label:"Response?"},{k:"next",label:"Next step"}]}]}
  ]},
-"27":{title:"Offer v2 Refinement Template",phase:"Week 6",file:"27_Offer_v2_Refinement_Template.docx",
- purpose:"Evolve your offer from real data — review v1, analyze what worked and what to improve, then design a battle-tested Offer v2 and value-check it.",
+"27":{title:"Content Pillar Map",phase:"Week 6",file:"CFA_Doc33_Content_Pillar_Map.docx",
+ purpose:"Define 3–4 content pillars and 5 post ideas under each — that's 15–20 posts ready to draft, a month of content, so you never stare at a blank page.",
  sections:[
-  {t:"Offer v1 review",fields:[
-    {id:"v1_problem",label:"v1 — core problem solved",type:"text",req:true},
-    {id:"v1_outcome",label:"v1 — main outcome",type:"text"},
-    {id:"v1_price",label:"v1 — price",type:"number",prefix:"$"}]},
-  {t:"Client data analysis",fields:[
-    {id:"worked",label:"What worked well? (what clients valued most, results achieved)",type:"textarea",req:true},
-    {id:"improve",label:"What needs improvement? (struggles, what took too long, what was unsustainable for you)",type:"textarea",req:true}]},
-  {t:"Offer v2 design",fields:[
-    {id:"v2_problem",label:"v2 — core problem",type:"text",req:true},
-    {id:"v2_outcome",label:"v2 — main outcome",type:"text",req:true},
-    {id:"v2_price",label:"v2 — price",type:"number",prefix:"$",req:true},
-    {id:"v2_added",label:"What's ADDED",type:"text"},
-    {id:"v2_removed",label:"What's REMOVED",type:"text"}]},
-  {t:"Value Equation check (1–10)",fields:[
-    {id:"ve_dream",label:"Dream outcome (desirable?)",type:"scale",req:true},
-    {id:"ve_like",label:"Perceived likelihood (believable?)",type:"scale",req:true},
-    {id:"ve_time",label:"Time delay (fast results?)",type:"scale",req:true},
-    {id:"ve_effort",label:"Effort & sacrifice (easy for them?)",type:"scale",req:true}]}
+  {t:"My ICP + posting commitment",fields:[
+    {id:"icp",label:"My ICP (who I write for)",type:"text",req:true},
+    {id:"cadence",label:"My posting commitment (posts per week)",type:"number",req:true},
+    {id:"platform",label:"My primary platform",type:"select",req:true,options:["LinkedIn","Other"]}]},
+  {t:"Pillar 1 — Expertise (what I know)",fields:[
+    {id:"p1_name",label:"Pillar 1 name / topic area",type:"text",req:true},
+    {id:"p1_ideas",label:"5 post ideas (hook or concept for each)",type:"textarea",req:true}]},
+  {t:"Pillar 2 — Proof (what I've done)",fields:[
+    {id:"p2_name",label:"Pillar 2 name / topic area",type:"text",req:true},
+    {id:"p2_ideas",label:"5 post ideas (hook or concept for each)",type:"textarea",req:true}]},
+  {t:"Pillar 3 — Perspective (what I think)",fields:[
+    {id:"p3_name",label:"Pillar 3 name / topic area",type:"text",req:true},
+    {id:"p3_ideas",label:"5 post ideas (hook or concept for each)",type:"textarea",req:true}]},
+  {t:"Pillar 4 — Story (why I do it) — optional",fields:[
+    {id:"p4_name",label:"Pillar 4 name / topic area",type:"text"},
+    {id:"p4_ideas",label:"5 post ideas (hook or concept for each)",type:"textarea"}]}
  ]},
-"28":{title:"Delivery System Documentation",phase:"Week 6",file:"28_Delivery_System_Documentation.docx",
- purpose:"Document your delivery end-to-end — the client journey, standard agenda, and tools — so results are consistent and the system can scale beyond your head.",
+"28":{title:"Marketing Scorecard",phase:"Week 6",file:"CFA_Doc34_Marketing_Scorecard.docx",
+ purpose:"Run this every Monday in 5 minutes alongside your KPI Dashboard. Fill the Actual column, compare to last week — your weakest metric tells you where to focus.",
  sections:[
-  {t:"System overview",fields:[
-    {id:"name",label:"Program name",type:"text",req:true},
-    {id:"duration",label:"Duration",type:"text"},
-    {id:"format",label:"Format",type:"select",options:["1:1","Group","Hybrid","Self-paced"]},
-    {id:"freq",label:"Call frequency",type:"text"}]},
-  {t:"Client journey map",fields:[
-    {id:"journey",label:"Journey phases",type:"table",req:true,min:3,cols:[{k:"phase",label:"Phase"},{k:"milestone",label:"Milestone"},{k:"deliverable",label:"Client deliverable"},{k:"action",label:"Your action"}]}]},
-  {t:"Standard call agenda",fields:[
-    {id:"agenda",label:"Your standard agenda (by time block)",type:"textarea"}]},
-  {t:"Tools & templates",fields:[
-    {id:"tools",label:"What's in place (check all)",type:"multiselect",req:true,options:["Welcome email template","Intake questionnaire","Call scheduling (Calendly)","Video platform (Zoom)","Client tracker / CRM","Session notes template","Action items template"]}]}
+  {t:"Weekly tracking",help:"Targets: SSI 70+, 200 requests, 40%+ acceptance, 2–5 posts, 10+ value-first DMs. Log each week.",fields:[
+    {id:"scorecard",label:"Weekly marketing metrics",type:"table",req:true,min:1,cols:[{k:"week",label:"Week of"},{k:"ssi",label:"SSI (70+)"},{k:"requests",label:"Requests (200)"},{k:"accept",label:"Acceptance % (40+)"},{k:"posts",label:"Posts (2–5)"},{k:"views",label:"Profile views"},{k:"engage",label:"Engagement % (2–4)"},{k:"inbound",label:"Inbound DMs"},{k:"valuedms",label:"Value DMs (10+)"},{k:"calls",label:"Calls booked"}]}]},
+  {t:"Focus",fields:[
+    {id:"weakest_metric",label:"My weakest metric this week — and what I'll do about it",type:"textarea",req:true},
+    {id:"trend",label:"8-week trend: where did I improve most, where am I still inconsistent?",type:"textarea"}]}
  ]},
 "29":{title:"Client Acquisition SOP",phase:"Week 7",file:"29_Client_Acquisition_SOP.docx",
  purpose:"Document your proven path from stranger → client as a repeatable SOP, with daily activities and weekly targets so acquisition runs on consistency, not intensity.",
@@ -1120,29 +1118,29 @@ const STAGES=[
    {id:9,t:"Decision Velocity",tier:"HIGH",dom:"Leadership",doc:"09",group:"Offer architecture (kickoff → week 1)"},
    {id:10,t:"Offer v1 — Offer Architecture",tier:"CRITICAL",dom:"GTM",doc:"10",group:"Offer architecture (kickoff → week 1)"}]},
  {key:"Validation",short:"Valid.",name:"Stage 2 · Validation",tasks:[
-   {id:11,t:"Validation Conversation Guide",tier:"CRITICAL",dom:"GTM",doc:"06"},
-   {id:12,t:"Conversation Debrief",tier:"HIGH",dom:"GTM",doc:"11"},
-   {id:13,t:"PMF Validation Checklist",tier:"CRITICAL",dom:"Strategy",doc:"12"}]},
+   {id:11,t:"Validation Conversation Guide",tier:"CRITICAL",dom:"GTM",doc:"06",group:"Validation conversations (week 2)"},
+   {id:12,t:"Conversation Debrief",tier:"HIGH",dom:"GTM",doc:"11",group:"Validation conversations (week 2)"},
+   {id:13,t:"PMF Validation Checklist",tier:"CRITICAL",dom:"Strategy",doc:"12",group:"Validation conversations (week 2)"}]},
  {key:"Sales",short:"Sales",name:"Stage 3 · Sales",tasks:[
-   {id:14,t:"Money Mindset Reframe",tier:"SUPPORTING",dom:"Leadership",doc:"13"},
-   {id:15,t:"Pre-Call Ritual",tier:"SUPPORTING",dom:"Leadership",doc:"14"},
-   {id:16,t:"Sales Conversation Framework",tier:"CRITICAL",dom:"GTM",doc:"15"},
-   {id:17,t:"Objection Handling",tier:"HIGH",dom:"GTM",doc:"16"}]},
+   {id:14,t:"Money Mindset Reframe",tier:"SUPPORTING",dom:"Leadership",doc:"13",group:"First sales (week 3)"},
+   {id:15,t:"Pre-Call Ritual",tier:"SUPPORTING",dom:"Leadership",doc:"14",group:"First sales (week 3)"},
+   {id:16,t:"Sales Conversation Framework",tier:"CRITICAL",dom:"GTM",doc:"15",group:"First sales (week 3)"},
+   {id:17,t:"Objection Handling",tier:"HIGH",dom:"GTM",doc:"16",group:"First sales (week 3)"}]},
  {key:"Delivery",short:"Deliv.",name:"Stage 4 · Delivery",tasks:[
-   {id:18,t:"Identity Shift",tier:"SUPPORTING",dom:"Leadership",doc:"17"},
-   {id:19,t:"Imposter Syndrome Toolkit",tier:"SUPPORTING",dom:"Leadership",doc:"18"},
-   {id:20,t:"Delivery MVP",tier:"HIGH",dom:"Systems",doc:"19"},
-   {id:21,t:"Client Onboarding",tier:"HIGH",dom:"Systems",doc:"20"},
-   {id:22,t:"Money Hygiene",tier:"HIGH",dom:"Financial",doc:"C2"}]},
+   {id:18,t:"Identity Shift",tier:"SUPPORTING",dom:"Leadership",doc:"17",group:"Delivery MVP (week 4)"},
+   {id:19,t:"Imposter Syndrome Toolkit",tier:"SUPPORTING",dom:"Leadership",doc:"18",group:"Delivery MVP (week 4)"},
+   {id:20,t:"Delivery MVP",tier:"HIGH",dom:"Systems",doc:"19",group:"Delivery MVP (week 4)"},
+   {id:21,t:"Client Onboarding",tier:"HIGH",dom:"Systems",doc:"20",group:"Delivery MVP (week 4)"},
+   {id:22,t:"Money Hygiene",tier:"HIGH",dom:"Financial",doc:"C2",group:"Delivery MVP (week 4)"}]},
  {key:"Marketing",short:"Mktg.",name:"Stage 5 · Marketing",tasks:[
    {id:23,t:"Momentum Framework",tier:"HIGH",dom:"Leadership",doc:"21",group:"Momentum & messaging (week 5)"},
    {id:24,t:"Life Architecture Audit",tier:"SUPPORTING",dom:"Leadership",doc:"22",group:"Momentum & messaging (week 5)"},
    {id:25,t:"Testimonial Request",tier:"HIGH",dom:"GTM",doc:"23",group:"Momentum & messaging (week 5)"},
    {id:26,t:"Messaging Refinement",tier:"HIGH",dom:"GTM",doc:"24",group:"Momentum & messaging (week 5)"},
-   {id:27,t:"Scaling Architecture Audit",tier:"HIGH",dom:"Systems",doc:"25",group:"Marketing systems (week 6)"},
-   {id:28,t:"Bottleneck Identification",tier:"HIGH",dom:"Systems",doc:"26",group:"Marketing systems (week 6)"},
-   {id:29,t:"Offer v2 Refinement",tier:"HIGH",dom:"GTM",doc:"27",group:"Marketing systems (week 6)"},
-   {id:30,t:"Delivery System Documentation",tier:"HIGH",dom:"Systems",doc:"28",group:"Marketing systems (week 6)"}]},
+   {id:27,t:"LinkedIn Authority Audit",tier:"HIGH",dom:"GTM",doc:"25",group:"Marketing systems (week 6)"},
+   {id:28,t:"ICP Connection Tracker",tier:"HIGH",dom:"GTM",doc:"26",group:"Marketing systems (week 6)"},
+   {id:29,t:"Content Pillar Map",tier:"HIGH",dom:"GTM",doc:"27",group:"Marketing systems (week 6)"},
+   {id:30,t:"Marketing Scorecard",tier:"HIGH",dom:"Data",doc:"28",group:"Marketing systems (week 6)"}]},
  {key:"Scale",short:"Scale",name:"Stage 6 · Scale",tasks:[
    {id:31,t:"Client Acquisition SOP",tier:"CRITICAL",dom:"Systems",doc:"29",group:"CEO operating system (week 7)"},
    {id:32,t:"KPI Dashboard",tier:"HIGH",dom:"Data",doc:"30",group:"CEO operating system (week 7)"},
@@ -1158,6 +1156,27 @@ const STAGES=[
    {id:42,t:"Long-Term Vision",tier:"SUPPORTING",dom:"Strategy",doc:"38",group:"90-day plan & transition (week 8)"},
    {id:43,t:"Program Completion Checklist",tier:"CRITICAL",dom:"Cross",doc:"39",group:"90-day plan & transition (week 8)"}]}
 ];
+
+/* ========== NOTION LESSON LINKS (CFA 26-2) ========== */
+const NOTION={
+ kickoff:"https://verticalmotion.notion.site/cfa-26-1-kickoff",
+ 1:"https://verticalmotion.notion.site/cfa-26-2-week-1",
+ 2:"https://verticalmotion.notion.site/cfa-26-2-week-2",
+ 3:"https://verticalmotion.notion.site/cfa-26-2-week-3",
+ 4:"https://verticalmotion.notion.site/cfa-26-2-week-4",
+ 5:"https://www.notion.so/verticalmotion/CFA-26-2-Week-5-30ef31252d83812794fcc74816575074",
+ 6:"https://www.notion.so/verticalmotion/CFA-26-2-Week-6-343f31252d8380e18f4efacc4486ba1f",
+ 7:"https://verticalmotion.notion.site/cfa-26-2-week-7",
+ 8:"https://verticalmotion.notion.site/cfa-26-2-week-8"
+};
+// Resolve a group label (e.g. "Marketing systems (week 6)") to {url,label}
+function groupNotion(group){
+  if(!group) return null;
+  const m=group.match(/week\s*(\d)/i);
+  if(m){const w=+m[1];return NOTION[w]?{url:NOTION[w],label:"Week "+w+" lesson"}:null;}
+  if(/pre-work/i.test(group)) return {url:NOTION.kickoff,label:"Kickoff lesson"};
+  return null;
+}
 
 /* ================= CONFIG ================= */
 const SUPABASE_URL="https://rmjlslgfrflbqkwxtidm.supabase.co";
@@ -1225,7 +1244,7 @@ function checklistHTML(prog,onclickName){
     html+=`<div class="stage" id="stage${i}"><h4>${s.name}<span class="p">${d}/${s.tasks.length}</span></h4>`;
     let lastGroup=null;
     for(const t of s.tasks){
-      if(t.group&&t.group!==lastGroup){html+=`<div class="subgroup">${esc(t.group)}</div>`;lastGroup=t.group;}
+      if(t.group&&t.group!==lastGroup){const gn=groupNotion(t.group);const gl=gn?`<a class="wknotion" href="${gn.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open ${esc(gn.label)} in Notion ↗</a>`:"";html+=`<div class="subgroup">${esc(t.group)}${gl}</div>`;lastGroup=t.group;}
       const c=cls(t.tier);const complete=wsComplete(t.doc,prog);const started=!complete&&wsStarted(t.doc,prog);
       const stateCls=complete?'done':(started?'part':'');const w=WS[t.doc];const s2=docState(t.doc,prog);
       let note="";
@@ -1250,7 +1269,9 @@ function render(){
   if(hn){
     const next=ALL.find(t=>!wsComplete(t.doc,PROG));
     if(next){const st=STAGES[cur]?STAGES[cur].name:("Stage "+(cur+1));
-      hn.innerHTML=`<div class="eyebrow">You are here — ${esc(st)} · ${doneN}/${TOTAL} complete</div><div class="big">Next up: ${esc(next.t)}</div><div><span class="go" onclick="openWS('${next.doc}')">Open worksheet →</span></div>`;
+      const gn=groupNotion(next.group);
+      const nlink=gn?`<a class="hngo" href="${gn.url}" target="_blank" rel="noopener">${esc(gn.label)} in Notion ↗</a>`:"";
+      hn.innerHTML=`<div class="eyebrow">You are here — ${esc(st)} · ${doneN}/${TOTAL} complete</div><div class="big">Next up: ${esc(next.t)}</div><div class="hnactions"><span class="go" onclick="openWS('${next.doc}')">Open worksheet →</span>${nlink}</div>`;
     }else{hn.innerHTML=`<div class="eyebrow">Program complete</div><div class="big">All ${TOTAL} steps done. 🎉</div>`;}
   }
   const nextCrit=ALL.find(t=>t.tier==="CRITICAL"&&!wsComplete(t.doc,PROG));
