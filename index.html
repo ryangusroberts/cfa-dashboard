@@ -240,17 +240,31 @@
 <div id="authView" class="authwrap hide">
   <div class="authcard">
     <div class="authbrand"><div class="logo"><img src="https://vmleader.com/vm-icon.png" alt="Vertical Motion"></div><div><b>Corporate Freedom Accelerator</b><br><span>Vertical Motion</span></div></div>
-    <h2 id="authTitle">Welcome back</h2>
-    <div class="lead" id="authLead">Log in to continue your 8-week sprint.</div>
-    <div id="signupOnly" class="hide">
-      <div class="field"><label>Your name</label><input id="suName" type="text" placeholder="Jane Founder" autocomplete="name"></div>
-      <div class="field"><label>Business name (optional)</label><input id="suBiz" type="text" placeholder="Acme Advisory"></div>
+        <h2 id="authTitle">Sign in</h2>
+    <div class="lead" id="authLead">Enter your email and we'll send you a secure login link — no password needed.</div>
+    <div id="authForm">
+      <div class="field"><label>Your name <span style="color:var(--muted);font-weight:400">(first time only)</span></label><input id="suName" type="text" placeholder="Jane Founder" autocomplete="name"></div>
+      <div class="field"><label>Email</label><input id="auEmail" type="email" placeholder="you@email.com" autocomplete="email"></div>
+      <button class="authbtn" id="authBtn" onclick="sendMagicLink()">Email me a login link</button>
+      <div class="authmsg" id="authMsg"></div>
+      <div class="authtoggle">Use the email you enrolled with. Coaches: sign in with your @vmleader.com email.</div>
     </div>
-    <div class="field"><label>Email</label><input id="auEmail" type="email" placeholder="you@email.com" autocomplete="email"></div>
-    <div class="field"><label>Password</label><input id="auPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
-    <button class="authbtn" id="authBtn" onclick="doAuth()">Log in</button>
-    <div class="authmsg" id="authMsg"></div>
-    <div class="authtoggle" id="authToggle">New here? <a onclick="toggleAuth()">Create an account</a></div>
+    <div id="authSent" class="hide">
+      <div class="field" style="font-size:14px;line-height:1.6">Check <b id="sentEmail"></b> for your login link. Open it on this device to continue — you can close this tab afterward.</div>
+      <div class="authtoggle"><a onclick="location.reload()">Use a different email</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== NO-ACCESS / GATE VIEW ===================== -->
+<div id="gateView" class="authwrap hide">
+  <div class="authcard">
+    <div class="authbrand"><div class="logo"><img src="https://vmleader.com/vm-icon.png" alt="Vertical Motion"></div><div><b>Corporate Freedom Accelerator</b><br><span>Vertical Motion</span></div></div>
+    <h2>Members only</h2>
+    <div class="lead">This dashboard is for enrolled Corporate Freedom Accelerator members. We don't see <b id="gateEmail"></b> on the current member list yet.</div>
+    <a class="authbtn" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box" href="https://community.vmleader.com" target="_blank" rel="noopener">Join the CFA →</a>
+    <div class="authmsg">Already enrolled? Sign in with the exact email you used to join — access can take a few minutes to sync after you purchase.</div>
+    <div class="authtoggle"><a onclick="doLogout()">Use a different email</a></div>
   </div>
 </div>
 
@@ -1414,28 +1428,27 @@ function setName(v){document.getElementById('hname').textContent=v.trim()||"Your
 async function resetAll(){if(!confirm("Clear ALL your worksheet progress? This cannot be undone."))return;const {error}=await sb.from('progress').delete().eq('user_id',ME.id);if(error){alert('Could not reset — '+error.message);return;}PROG={};render();setSync('saved');}
 
 /* ================= AUTH ================= */
-function toggleAuth(){AUTHMODE=AUTHMODE==='login'?'signup':'login';
-  document.getElementById('signupOnly').classList.toggle('hide',AUTHMODE!=='signup');
-  document.getElementById('authTitle').textContent=AUTHMODE==='signup'?'Create your account':'Welcome back';
-  document.getElementById('authLead').textContent=AUTHMODE==='signup'?'Start your 8-week sprint. Your progress saves to your account.':'Log in to continue your 8-week sprint.';
-  document.getElementById('authBtn').textContent=AUTHMODE==='signup'?'Create account':'Log in';
-  document.getElementById('authToggle').innerHTML=AUTHMODE==='signup'?'Already have an account? <a onclick="toggleAuth()">Log in</a>':'New here? <a onclick="toggleAuth()">Create an account</a>';
-  authMsg('');}
 function authMsg(t,ok){const el=document.getElementById('authMsg');el.className='authmsg'+(t?(ok?' ok':' err'):'');el.textContent=t;}
-async function doAuth(){const email=document.getElementById('auEmail').value.trim();const pass=document.getElementById('auPass').value;if(!email||!pass){authMsg('Enter your email and password.');return;}
+const COACH_DOMAIN='@vmleader.com';
+function isCoachEmail(e){return !!e&&e.trim().toLowerCase().endsWith(COACH_DOMAIN);}
+async function hasAccess(email){if(isCoachEmail(email))return true;try{const {data}=await sb.from('allowed_members').select('active').eq('email',email.trim().toLowerCase()).maybeSingle();return !!(data&&data.active);}catch(e){return false;}}
+async function sendMagicLink(){const email=document.getElementById('auEmail').value.trim();const full_name=document.getElementById('suName').value.trim();if(!email){authMsg('Enter your email.');return;}
   const btn=document.getElementById('authBtn');btn.disabled=true;
-  try{if(AUTHMODE==='signup'){const full_name=document.getElementById('suName').value.trim();const business_name=document.getElementById('suBiz').value.trim();const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name,business_name}}});if(error)throw error;if(!data.session){authMsg('Account created. Check your email to confirm, then log in.',true);AUTHMODE='signup';toggleAuth();return;}}else{const {error}=await sb.auth.signInWithPassword({email,password:pass});if(error)throw error;}}catch(e){authMsg(e.message||'Something went wrong.');}finally{btn.disabled=false;}}
+  try{const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname,data:full_name?{full_name}:undefined}});if(error)throw error;document.getElementById('authForm').classList.add('hide');document.getElementById('authSent').classList.remove('hide');document.getElementById('sentEmail').textContent=email;}catch(e){authMsg(e.message||'Something went wrong.');}finally{btn.disabled=false;}}
 async function doLogout(){await sb.auth.signOut();location.reload();}
 
 /* ================= ROUTING ================= */
-function show(view){['authView','appView','coachView'].forEach(v=>document.getElementById(v).classList.toggle('hide',v!==view));}
+function show(view){['authView','gateView','appView','coachView'].forEach(v=>document.getElementById(v).classList.toggle('hide',v!==view));}
 async function routeSession(session){
   if(!session){ME=null;PROFILE=null;COACHVIEWING=false;show('authView');return;}
   ME=session.user;
+  const coach=isCoachEmail(ME.email);
+  if(!coach){const ok=await hasAccess(ME.email);if(!ok){show('gateView');document.getElementById('gateEmail').textContent=ME.email;return;}}
   let {data:prof}=await sb.from('profiles').select('*').eq('id',ME.id).maybeSingle();
-  if(!prof){await sb.from('profiles').insert({id:ME.id,email:ME.email});({data:prof}=await sb.from('profiles').select('*').eq('id',ME.id).maybeSingle());}
-  PROFILE=prof||{role:'client'};
-  if(PROFILE.role==='coach'&&!COACHVIEWING){show('coachView');document.getElementById('cAcctName').textContent=PROFILE.full_name||ME.email;document.getElementById('cAcctEmail').textContent=ME.email;loadCoach();}
+  if(!prof){const fn=(ME.user_metadata&&ME.user_metadata.full_name)||null;await sb.from('profiles').insert({id:ME.id,email:ME.email,full_name:fn});({data:prof}=await sb.from('profiles').select('*').eq('id',ME.id).maybeSingle());}
+  PROFILE=prof||{};
+  PROFILE.role=coach?'coach':'client';
+  if(coach&&!COACHVIEWING){show('coachView');document.getElementById('cAcctName').textContent=PROFILE.full_name||ME.email;document.getElementById('cAcctEmail').textContent=ME.email;loadCoach();}
   else{show('appView');document.getElementById('acctName').textContent=PROFILE.full_name||'—';document.getElementById('acctEmail').textContent=ME.email;document.getElementById('bizname').value=PROFILE.business_name||'';document.getElementById('hname').textContent=(PROFILE.business_name||'').trim()||'Your Venture';await loadProgress();}
 }
 async function loadProgress(){const {data,error}=await sb.from('progress').select('doc_key,fields,file_name').eq('user_id',ME.id);PROG={};if(!error&&data)data.forEach(r=>{PROG[r.doc_key]={fields:r.fields||{},file_name:r.file_name||null};});render();setSync('saved');}
@@ -1443,9 +1456,10 @@ async function loadProgress(){const {data,error}=await sb.from('progress').selec
 /* ================= COACH ================= */
 async function loadCoach(){
   document.getElementById('cohortWrap').innerHTML='<div class="empty">Loading cohort…</div>';
-  const {data:clients,error:e1}=await sb.from('profiles').select('*').eq('role','client').order('created_at',{ascending:true});
+    const {data:allProfiles,error:e1}=await sb.from('profiles').select('*').order('created_at',{ascending:true});
   const {data:rows,error:e2}=await sb.from('progress').select('user_id,doc_key,fields,file_name,updated_at');
   if(e1||e2){document.getElementById('cohortWrap').innerHTML='<div class="empty">Could not load cohort: '+esc((e1||e2).message)+'</div>';return;}
+  const clients=(allProfiles||[]).filter(p=>!isCoachEmail(p.email||''));
   const byUser={};(rows||[]).forEach(r=>{(byUser[r.user_id]=byUser[r.user_id]||{})[r.doc_key]={fields:r.fields||{},file_name:r.file_name||null,updated_at:r.updated_at};});
   COACH_CLIENTS=(clients||[]).map(p=>{const prog=byUser[p.id]||{};const {doneN,pct,stagePct,cur}=countsFor(prog);let last=null;Object.values(prog).forEach(d=>{if(d.updated_at&&(!last||d.updated_at>last))last=d.updated_at;});return {profile:p,prog,doneN,pct,stagePct,cur,last};});
   renderCohort();
