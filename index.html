@@ -35,8 +35,10 @@
   .navrow .sc{font-weight:800;font-size:12.5px;color:#fff}
   .btn{margin-top:16px;width:100%;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);color:#dbe7ef;font-weight:600;padding:10px;border-radius:100px;cursor:pointer;font-size:12.5px;transition:background .15s}
   .btn:hover{background:rgba(255,255,255,.1)}
-  .commlink{display:block;text-align:center;margin-top:18px;text-decoration:none;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);color:#dbe7ef;font-weight:600;padding:10px;border-radius:100px;font-size:12.5px;transition:background .15s}
-  .commlink:hover{background:rgba(255,255,255,.1)}
+  .commlink{position:relative;overflow:hidden;display:block;margin-top:18px;text-decoration:none;color:#fff;font-weight:700;font-size:12.5px;letter-spacing:.01em;padding:15px 16px;border-radius:14px;background:linear-gradient(135deg,#20a7e6 0%,#0693d8 55%,#0575ab 100%);box-shadow:0 10px 24px rgba(6,147,216,.4);border:1px solid rgba(255,255,255,.22);transition:transform .15s,box-shadow .15s}
+  .commlink:hover{transform:translateY(-2px);box-shadow:0 15px 32px rgba(6,147,216,.55)}
+  .commlink::after{content:"";position:absolute;top:50%;right:-30px;width:118px;height:118px;transform:translateY(-50%);background:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='118'%20height='118'%3E%3Cg%20fill='none'%20stroke='white'%20stroke-opacity='0.22'%20stroke-width='2'%3E%3Ccircle%20cx='59'%20cy='59'%20r='54'/%3E%3Ccircle%20cx='59'%20cy='59'%20r='39'/%3E%3Ccircle%20cx='59'%20cy='59'%20r='25'/%3E%3C/g%3E%3Ccircle%20cx='59'%20cy='59'%20r='11'%20fill='white'%20fill-opacity='0.25'/%3E%3C/svg%3E") no-repeat center/contain;pointer-events:none}
+  .commlink .cc-txt{position:relative;z-index:1;display:block;text-align:left;padding-right:34px}
   .main{padding:30px 34px 64px;max-width:1140px}
   .topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
   h1{font-size:30px;color:var(--navy);margin:0 0 4px;font-family:var(--font-display);font-weight:400;letter-spacing:-.01em}.sub{color:var(--muted);font-size:13px;max-width:70ch}
@@ -260,7 +262,7 @@
     <div class="ring-wrap"><svg id="ring" width="132" height="132" viewBox="0 0 132 132"></svg><div class="ring-label">Complete</div></div>
     <h4>Stages</h4>
     <div id="navstages"></div>
-    <a class="commlink" href="https://community.vmleader.com" target="_blank" rel="noopener">Open Vertical Motion Community ↗</a>
+    <a class="commlink" href="https://community.vmleader.com" target="_blank" rel="noopener"><span class="cc-txt">Open VM Community in Circle ↗</span></a>
   </aside>
   <main class="main">
     <div class="topbar">
