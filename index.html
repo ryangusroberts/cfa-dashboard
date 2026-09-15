@@ -258,7 +258,6 @@
     <div class="ring-wrap"><svg id="ring" width="132" height="132" viewBox="0 0 132 132"></svg><div class="ring-label">Complete</div></div>
     <h4>Stages</h4>
     <div id="navstages"></div>
-    <button class="btn" onclick="resetAll()">Reset my progress</button>
   </aside>
   <main class="main">
     <div class="topbar">
@@ -1169,12 +1168,14 @@ const NOTION={
  7:"https://verticalmotion.notion.site/cfa-26-2-week-7",
  8:"https://verticalmotion.notion.site/cfa-26-2-week-8"
 };
+// Lesson themes per week (CFA 26-2)
+const NOTION_THEME={1:"Offer Architecture",2:"Validation Conversations",3:"First Sales",4:"Delivery MVP",5:"Momentum & Messaging",6:"Marketing Systems",7:"CEO Operating Systems",8:"90-Day Plan"};
 // Resolve a group label (e.g. "Marketing systems (week 6)") to {url,label}
 function groupNotion(group){
   if(!group) return null;
   const m=group.match(/week\s*(\d)/i);
-  if(m){const w=+m[1];return NOTION[w]?{url:NOTION[w],label:"Week "+w+" lesson"}:null;}
-  if(/pre-work/i.test(group)) return {url:NOTION.kickoff,label:"Kickoff lesson"};
+  if(m){const w=+m[1];return NOTION[w]?{url:NOTION[w],label:"Week "+w+" Lesson: "+NOTION_THEME[w]}:null;}
+  if(/pre-work/i.test(group)) return {url:NOTION.kickoff,label:"Kickoff Lesson"};
   return null;
 }
 
@@ -1244,7 +1245,7 @@ function checklistHTML(prog,onclickName){
     html+=`<div class="stage" id="stage${i}"><h4>${s.name}<span class="p">${d}/${s.tasks.length}</span></h4>`;
     let lastGroup=null;
     for(const t of s.tasks){
-      if(t.group&&t.group!==lastGroup){const gn=groupNotion(t.group);const gl=gn?`<a class="wknotion" href="${gn.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open ${esc(gn.label)} in Notion ↗</a>`:"";html+=`<div class="subgroup">${esc(t.group)}${gl}</div>`;lastGroup=t.group;}
+      if(t.group&&t.group!==lastGroup){const gn=groupNotion(t.group);const gl=gn?`<a class="wknotion" href="${gn.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open ${esc(gn.label)} ↗</a>`:"";html+=`<div class="subgroup">${esc(t.group)}${gl}</div>`;lastGroup=t.group;}
       const c=cls(t.tier);const complete=wsComplete(t.doc,prog);const started=!complete&&wsStarted(t.doc,prog);
       const stateCls=complete?'done':(started?'part':'');const w=WS[t.doc];const s2=docState(t.doc,prog);
       let note="";
@@ -1270,7 +1271,7 @@ function render(){
     const next=ALL.find(t=>!wsComplete(t.doc,PROG));
     if(next){const st=STAGES[cur]?STAGES[cur].name:("Stage "+(cur+1));
       const gn=groupNotion(next.group);
-      const nlink=gn?`<a class="hngo" href="${gn.url}" target="_blank" rel="noopener">${esc(gn.label)} in Notion ↗</a>`:"";
+      const nlink=gn?`<a class="hngo" href="${gn.url}" target="_blank" rel="noopener">Open ${esc(gn.label)} ↗</a>`:"";
       hn.innerHTML=`<div class="eyebrow">You are here — ${esc(st)} · ${doneN}/${TOTAL} complete</div><div class="big">Next up: ${esc(next.t)}</div><div class="hnactions"><span class="go" onclick="openWS('${next.doc}')">Open worksheet →</span>${nlink}</div>`;
     }else{hn.innerHTML=`<div class="eyebrow">Program complete</div><div class="big">All ${TOTAL} steps done. 🎉</div>`;}
   }
