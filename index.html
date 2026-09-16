@@ -39,6 +39,9 @@
   .commlink:hover{transform:translateY(-2px);box-shadow:0 15px 32px rgba(6,147,216,.55)}
   .commlink::after{content:"";position:absolute;top:50%;right:-30px;width:118px;height:118px;transform:translateY(-50%);background:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='118'%20height='118'%3E%3Cg%20fill='none'%20stroke='white'%20stroke-opacity='0.22'%20stroke-width='2'%3E%3Ccircle%20cx='59'%20cy='59'%20r='54'/%3E%3Ccircle%20cx='59'%20cy='59'%20r='39'/%3E%3Ccircle%20cx='59'%20cy='59'%20r='25'/%3E%3C/g%3E%3Ccircle%20cx='59'%20cy='59'%20r='11'%20fill='white'%20fill-opacity='0.25'/%3E%3C/svg%3E") no-repeat center/contain;pointer-events:none}
   .commlink .cc-txt{position:relative;z-index:1;display:block;text-align:left;padding-right:34px}
+  .aoslink{display:block;margin-top:14px;text-decoration:none;color:#fff;font-weight:700;font-size:12.5px;letter-spacing:.01em;padding:15px 16px;border-radius:14px;background:linear-gradient(135deg,#12324a 0%,#0b2033 100%);box-shadow:0 10px 24px rgba(8,30,43,.4);border:1px solid rgba(255,255,255,.18);transition:transform .15s,box-shadow .15s;text-align:left}
+  .aoslink:hover{transform:translateY(-2px);box-shadow:0 15px 32px rgba(8,30,43,.55)}
+  .aoslink .aos-k{display:block;font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;opacity:.6;margin-bottom:2px}
   .main{padding:30px 34px 64px;max-width:1140px}
   .topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
   h1{font-size:30px;color:var(--navy);margin:0 0 4px;font-family:var(--font-display);font-weight:400;letter-spacing:-.01em}.sub{color:var(--muted);font-size:13px;max-width:70ch}
@@ -276,12 +279,13 @@
     <div class="ring-wrap"><svg id="ring" width="132" height="132" viewBox="0 0 132 132"></svg><div class="ring-label">Complete</div></div>
     <h4>Stages</h4>
     <div id="navstages"></div>
+    <a class="aoslink" href="https://verticalmotion.notion.site/Pre-Work-Your-AI-Operating-System-3ddf31252d8380829aaef1a662f3a9cf" target="_blank" rel="noopener"><span class="aos-k">Pre-work · Start here</span>Your AI Operating System ↗</a>
     <a class="commlink" href="https://community.vmleader.com" target="_blank" rel="noopener"><span class="cc-txt">Open VM Community in Circle ↗</span></a>
   </aside>
   <main class="main">
     <div class="topbar">
       <div><h1><span id="hname">Your Venture</span> · Corporate Freedom Accelerator</h1>
-      <div class="sub">Your progress through the Corporate Freedom Accelerator — 39 worksheets plus 4 companion steps. Click any step to fill it in or load a completed copy.<span class="syncdot" id="syncdot"></span></div></div>
+      <div class="sub">Your progress through the Corporate Freedom Accelerator — 39 worksheets plus 5 companion steps. Click any step to fill it in or load a completed copy.<span class="syncdot" id="syncdot"></span></div></div>
       <div class="acctbar">
         <div class="who"><b id="acctName">—</b><span class="viewbadge" id="viewBadge" style="display:none">Viewing as client</span><br><span id="acctEmail"></span></div>
         <button class="coachback" id="backCoachBtn" style="display:none" onclick="backToCoach()">← Coach dashboard</button>
@@ -313,7 +317,7 @@
     </div>
     <div class="panel">
       <h3>The full checklist</h3>
-      <div class="hint">39 CFA worksheets plus 4 companion steps (marked <i>Companion step</i>). Click any step to open it, fill it in inline (saved to your account) <b>or</b> load your completed copy. A step only checks off once it's finished or a completed file is loaded.</div>
+      <div class="hint">39 CFA worksheets plus 5 companion steps (marked <i>Companion step</i>). Click any step to open it, fill it in inline (saved to your account) <b>or</b> load your completed copy. A step only checks off once it's finished or a completed file is loaded.</div>
       <div id="tasklist"></div>
     </div>
     <div class="foot">
@@ -1091,6 +1095,15 @@ const WS={
     {id:"shift",label:"The biggest mindset shift I've had",type:"text"}]}
  ]},
 /* ===== Companion steps (no formal CFA worksheet) ===== */
+"C0":{title:"Your AI Operating System",phase:"Foundations",companion:true,
+ purpose:"Before anything else, set up your AI operating system: load the CFA course into Claude, build your dashboard and KPI/dealflow/cash trackers, and stand up your first agent. Open the pre-work lesson, follow it, then confirm each piece below.",
+ sections:[
+  {t:"Confirm your setup",fields:[
+    {id:"cowork",label:"Cowork enabled and CFA folder connected",type:"select",req:true,options:["Done","In progress","Not yet"]},
+    {id:"dash",label:"Business dashboard + KPI, dealflow, and cash trackers built",type:"select",req:true,options:["Done","In progress","Not yet"]},
+    {id:"agent",label:"First agent (Monday metrics digest) set up",type:"select",req:true,options:["Done","In progress","Not yet"]},
+    {id:"context",label:"LDNA assessment and LinkedIn loaded into Claude",type:"select",req:true,options:["Done","In progress","Not yet"]}]}
+ ]},
 "C1":{title:"Mentors & Honest Advisors",phase:"Foundations",companion:true,
  purpose:"Line up 2-3 mentors or advisors who will tell you the truth as you build — not just cheer you on — and set a cadence to stay in touch.",
  sections:[
@@ -1125,6 +1138,7 @@ const WS={
 };
 const STAGES=[
  {key:"Foundations",short:"Found.",name:"Stage 1 · Foundations",tasks:[
+   {id:44,t:"Your AI Operating System",tier:"CRITICAL",dom:"Systems",doc:"C0",group:"AI operating system (pre-work)"},
    {id:1,t:"Expertise Inventory",tier:"HIGH",dom:"Strategy",doc:"01",group:"Readiness (pre-work)"},
    {id:2,t:"Market Scan Scorecard",tier:"HIGH",dom:"GTM",doc:"02",group:"Readiness (pre-work)"},
    {id:3,t:"Participant Intake & Goals",tier:"CRITICAL",dom:"Leadership",doc:"03",group:"Readiness (pre-work)"},
@@ -1177,6 +1191,7 @@ const STAGES=[
 
 /* ========== NOTION LESSON LINKS (CFA 26-2) ========== */
 const NOTION={
+ aios:"https://verticalmotion.notion.site/Pre-Work-Your-AI-Operating-System-3ddf31252d8380829aaef1a662f3a9cf",
  kickoff:"https://verticalmotion.notion.site/cfa-26-1-kickoff",
  1:"https://verticalmotion.notion.site/cfa-26-2-week-1",
  2:"https://verticalmotion.notion.site/cfa-26-2-week-2",
@@ -1194,6 +1209,7 @@ function groupNotion(group){
   if(!group) return null;
   const m=group.match(/week\s*(\d)/i);
   if(m){const w=+m[1];return NOTION[w]?{url:NOTION[w],label:"Week "+w+" Lesson: "+NOTION_THEME[w]}:null;}
+  if(/ai operating system/i.test(group)) return {url:NOTION.aios,label:"Pre-Work Lesson: Your AI Operating System"};
   if(/pre-work/i.test(group)) return {url:NOTION.kickoff,label:"Kickoff Lesson"};
   return null;
 }
