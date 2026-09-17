@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Your AI Operating System · CFA Pre-Work</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#081e2b;--navy-mid:#0d2d40;--slate:#5B7C99;--blue:#0693d8;--blue-dk:#0575ab;--blue-lt:#7ec5ea;
+    --orange:#fc6502;--icy:#CFE8EF;--ink:#0f2436;--muted:#64748b;--line:#e6ebf2;--bg:#eef2f7;--card:#fff;
+    --font-display:'DM Serif Display',Georgia,serif;--font-body:'Inter',system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+    --shadow:0 1px 3px rgba(8,30,43,.06),0 8px 24px rgba(8,30,43,.06);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--font-body);color:var(--ink);background:var(--bg);line-height:1.65}
+  a{color:var(--blue-dk)}
+  .topbar{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,#081e2b 0%,#0d2d40 100%);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand .logo{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .brand .logo img{width:26px;height:26px;object-fit:contain;display:block}
+  .brand b{font-size:14px;font-weight:700;letter-spacing:.01em}
+  .brand span{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-lt);font-weight:700}
+  .back{color:#dbeafe;text-decoration:none;font-size:13px;font-weight:600;padding:8px 14px;border:1px solid rgba(255,255,255,.18);border-radius:100px;white-space:nowrap;transition:background .15s}
+  .back:hover{background:rgba(255,255,255,.1)}
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px}
+  .hero{background:linear-gradient(135deg,#081e2b 0%,#0d2d40 60%,#0b3350 100%);color:#fff;padding:44px 0 120px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-120px;top:-80px;width:420px;height:420px;background:radial-gradient(circle,rgba(6,147,216,.35),transparent 62%);pointer-events:none}
+  .eyebrow{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,#20a7e6,#0575ab);padding:6px 12px;border-radius:100px}
+  .hero h1{font-family:var(--font-display);font-weight:400;font-size:44px;line-height:1.05;margin:16px 0 10px;letter-spacing:-.01em}
+  .hero p.sub{font-size:17px;color:#c7d6e0;max-width:60ch;margin:0}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+  .chip{font-size:12px;font-weight:600;color:#dbeafe;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:6px 12px;border-radius:100px}
+  /* recording */
+  .stage{margin-top:-88px;position:relative;z-index:5}
+  .videocard{background:#000;border-radius:var(--radius);overflow:hidden;box-shadow:0 24px 60px rgba(8,30,43,.34);border:1px solid rgba(255,255,255,.08)}
+  .ratio{position:relative;width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#0d2d40,#081e2b)}
+  .ratio iframe,.ratio video{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .vplaceholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;color:#c7d6e0;padding:24px}
+  .playbtn{width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#20a7e6,#0575ab);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(6,147,216,.5)}
+  .playbtn svg{margin-left:5px}
+  .vplaceholder b{color:#fff;font-size:15px;font-weight:700}
+  .vplaceholder small{font-size:12.5px;color:#8fb0c4}
+  .reclabel{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--navy-mid);color:#cfe0ea;font-size:12.5px;font-weight:600}
+  .reclabel .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--orange);margin-right:8px;vertical-align:middle}
+  /* body content */
+  .content{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);margin:26px 0 40px;padding:40px 44px}
+  .lead{font-size:18px;color:#31465a;margin:0 0 8px}
+  .lead.first{font-size:19px;color:var(--ink)}
+  .content h2{font-family:var(--font-display);font-weight:400;font-size:26px;color:var(--navy);margin:38px 0 12px;letter-spacing:-.01em}
+  .content h2:first-of-type{margin-top:10px}
+  .content h3{font-size:16px;font-weight:700;color:var(--ink);margin:22px 0 6px}
+  .content p{margin:0 0 14px}
+  .content ul,.content ol{margin:0 0 16px;padding-left:22px}
+  .content li{margin:6px 0}
+  .content strong{font-weight:700;color:var(--ink)}
+  hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+  table{width:100%;border-collapse:collapse;margin:8px 0 18px;font-size:14.5px}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--icy);color:var(--navy);font-weight:700;font-size:12.5px;letter-spacing:.02em}
+  tbody tr:last-child td{border-bottom:0}
+  .prompt{background:#f4f8fb;border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:12px 16px;margin:8px 0 16px;font-size:14.5px;color:#2a3d4f}
+  .prompt::before{content:"Prompt";display:block;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-dk);margin-bottom:4px}
+  .callout{background:linear-gradient(135deg,#f0f8fc,#eaf3f8);border:1px solid #d6e8f2;border-radius:12px;padding:16px 18px;margin:16px 0;font-size:14.5px}
+  .callout b{color:var(--navy)}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:0}
+  .steps>li{position:relative;padding:0 0 4px 44px;margin:0 0 18px}
+  .steps>li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:-2px;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#20a7e6,#0575ab);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center}
+  .steps .stitle{font-weight:700;color:var(--ink)}
+  .check{list-style:none;padding:0;margin:0 0 16px}
+  .check li{position:relative;padding:4px 0 4px 30px;margin:2px 0}
+  .check li::before{content:"";position:absolute;left:0;top:6px;width:16px;height:16px;border:2px solid var(--blue);border-radius:4px}
+  .kicker{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-dk);margin:0 0 4px}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+  .btn{display:inline-block;text-decoration:none;font-weight:700;font-size:14px;padding:13px 22px;border-radius:100px;transition:transform .15s,box-shadow .15s}
+  .btn.primary{background:linear-gradient(135deg,#20a7e6,#0575ab);color:#fff;box-shadow:0 10px 24px rgba(6,147,216,.36)}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 15px 32px rgba(6,147,216,.5)}
+  .btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#f3f6fb}
+  footer{text-align:center;color:var(--muted);font-size:12.5px;padding:0 0 48px}
+  footer .fl{width:30px;height:30px;margin:0 auto 8px;opacity:.7}
+  @media(max-width:640px){
+    .hero h1{font-size:32px}.content{padding:28px 20px}.hero{padding:32px 0 108px}
+    .content h2{font-size:22px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="logo"><img src="https://vmleader.com/vm-icon.png" alt="Vertical Motion"></div>
+    <div><b>Corporate Freedom Accelerator</b><span>Vertical Motion</span></div>
+  </div>
+  <a class="back" href="https://ryangusroberts.github.io/cfa-dashboard/">&larr; Back to dashboard</a>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Pre-Work · Start Here</span>
+    <h1>Your AI Operating System</h1>
+    <p class="sub">Set this up before Kickoff. You're not just starting a business — you're starting a one-person company where AI is your team.</p>
+    <div class="meta">
+      <span class="chip">⏱ 45–60 min</span>
+      <span class="chip">No code required</span>
+      <span class="chip">Cowork-first</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- ===================== RECORDING ===================== -->
+  <div class="stage">
+    <div class="videocard">
+      <div class="ratio">
+        <!-- SWAP: replace the placeholder below with your embed, e.g.
+             <iframe src="https://www.youtube.com/embed/VIDEO_ID" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> -->
+        <div class="vplaceholder" id="vph">
+          <div class="playbtn"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>
+          <b>Watch the walkthrough</b>
+          <small>Recording will appear here — follow along and build as you watch.</small>
+        </div>
+      </div>
+      <div class="reclabel"><span><span class="dot"></span>Lesson recording</span><span>Build alongside the video</span></div>
+    </div>
+  </div>
+
+  <!-- ===================== CONTENT ===================== -->
+  <div class="content">
+    <p class="lead first">This pre-work gets your AI operating system running before the program even begins, so every worksheet you complete from here compounds into a system that's already working for you.</p>
+    <p class="lead">By the end you'll have — live and working — a business dashboard, your KPI, dealflow, and cash trackers, your whole CFA course loaded into Claude, and your first working agent. All built by talking, no code, in under an hour. <strong>Do this now. It's the highest-leverage hour in the program.</strong></p>
+
+    <h2>What you'll walk away with</h2>
+    <ul>
+      <li>Your CFA course and worksheets loaded into Claude as a knowledge base you can ask anything of</li>
+      <li>A personal business dashboard: one home for your stage progress, KPIs, and tasks</li>
+      <li>KPI, dealflow (pipeline), and cash trackers you update just by talking</li>
+      <li>Your first agents doing recurring work for you automatically</li>
+      <li>A clear sense of when to use Cowork vs Claude Code</li>
+      <li>A simple lens — Eliminate, Automate, Delegate — for handing more and more to AI over time</li>
+    </ul>
+
+    <h3>Before you start</h3>
+    <ul>
+      <li>A Claude account with <strong>Cowork</strong> enabled</li>
+      <li>Your CFA worksheets saved in <strong>one folder</strong> on your computer</li>
+      <li>About an hour, uninterrupted</li>
+    </ul>
+
+    <hr>
+
+    <h2>First, the mental model: Cowork vs Claude Code</h2>
+    <p>Think of <strong>Cowork as your AI employee</strong> and <strong>Claude Code as your AI engineer</strong>. You'll live in Cowork and only reach for Code when you're building an actual software tool. Both are the same Claude underneath — what differs is the workspace and what it can build.</p>
+    <table>
+      <thead><tr><th></th><th>Cowork</th><th>Claude Code</th></tr></thead>
+      <tbody>
+        <tr><td><strong>What it is</strong></td><td>An AI teammate that works your files, apps, and browser</td><td>An AI developer that writes and runs real code</td></tr>
+        <tr><td><strong>Best for</strong></td><td>Running the business day to day: docs, dashboards, trackers, research, admin, simple agents</td><td>Building custom software: apps, integrations, automations with real logic</td></tr>
+        <tr><td><strong>How you use it</strong></td><td>Plain conversation — describe the outcome and watch it act</td><td>Plain conversation too, but it produces and runs a codebase</td></tr>
+        <tr><td><strong>Skill needed</strong></td><td>None</td><td>Comfort reviewing what it builds — still no hand-coding</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><b>Rule of thumb:</b> Start every task in Cowork. Move to Claude Code only when you need a durable, reusable tool you'll run again and again — and even then, Claude writes the code, not you. Most solopreneurs run their first year almost entirely in Cowork.</div>
+
+    <hr>
+
+    <h2>Build it: follow along in Cowork</h2>
+    <p>Do each step in order. Copy the prompt, run it, and adjust by conversation ("make it simpler," "add a column") until it's right.</p>
+    <ol class="steps">
+      <li><span class="stitle">Load your knowledge.</span> Connect Cowork to your CFA folder, then prove it worked.<div class="prompt">Here is my CFA course folder and my completed worksheets. Read them and tell me: my offer, my current stage, and my top 3 gaps.</div></li>
+      <li><span class="stitle">Build your dashboard.</span> Turn the course into a home base you reopen anytime.<div class="prompt">Build me a one-page business dashboard I can reopen and update. Sections: my CFA stage progress (the 6 stages), this week's KPIs, active deals, and my top 3 tasks.</div></li>
+      <li><span class="stitle">Build your KPI tracker.</span><div class="prompt">Create a weekly KPI tracker for a solo founder in the CFA: validation conversations, sales calls booked, offers made, revenue, and LinkedIn activity. Make it a table I update by telling you the numbers.</div></li>
+      <li><span class="stitle">Build your dealflow tracker.</span><div class="prompt">Create a dealflow tracker: each prospect with stage (Lead → Conversation → Proposal → Won/Lost), value, next action, and date. Let me add deals just by chatting.</div></li>
+      <li><span class="stitle">Add a light cash view.</span><div class="prompt">Add a simple cash view: monthly revenue, expenses, and runway in months.</div></li>
+      <li><span class="stitle">Update by conversation</span> — the magic moment. You never touch a spreadsheet again.<div class="prompt">Add a deal: Acme Co, proposal stage, $6k, follow up Friday. Also, this week I had 5 validation calls and made 2 offers — update my KPIs.</div></li>
+      <li><span class="stitle">Hire your first agent.</span> Turn a weekly chore into an automation.<div class="prompt">Every Monday at 7am, review my trackers and send me a digest: last week's KPIs, which deals moved, and the 3 things that need me this week.</div></li>
+      <li><span class="stitle">Know where Claude Code comes in</span> (nothing to build yet). When you outgrow this — a calculator your clients use, or your Stripe revenue flowing in automatically — that's a Claude Code job. Same conversation, but Claude builds real software you own.</li>
+    </ol>
+    <div class="callout"><b>End state:</b> a working dashboard, three live trackers, and one agent — all built by talking.</div>
+
+    <hr>
+
+    <h2>Give your AI the full picture of you</h2>
+    <p>The more your AI knows about you, the better it coaches you — on the course, your career, and your business. Beyond the CFA files, load two more things:</p>
+    <ul>
+      <li><strong>Your LDNA assessment.</strong> Share your results and ask Claude to name your complementary archetypes and your blind spots — then have it deliberately play those roles for you, covering the gaps a co-founder normally would.</li>
+      <li><strong>Your LinkedIn.</strong> Give Claude your profile so it knows your background, positioning, and network.</li>
+    </ul>
+    <p>Two ways to load them: turn on <strong>Claude in Chrome</strong> (or let Claude drive your computer) and point it at the page, or just copy and paste. Either works. Once Claude has your CFA work, your LDNA, and your LinkedIn, it stops being a generic assistant and becomes a coach that actually knows you.</p>
+
+    <hr>
+
+    <h2>Your operating lens: Eliminate, Automate, Delegate</h2>
+    <p>Run every recurring task through one question, in this order:</p>
+    <ol>
+      <li><strong>Eliminate</strong> — does this need doing at all? The cheapest task is the one you kill.</li>
+      <li><strong>Automate</strong> — if it must happen and it's repeatable, hand it to an agent or scheduled task. No human touch.</li>
+      <li><strong>Delegate</strong> — if it needs judgment, delegate it: first to AI with your review, later to a person.</li>
+    </ol>
+    <p><em>Example — a weekly client update:</em> Eliminate (does it need to be weekly?) → Automate (an agent drafts it from your trackers every Friday) → Delegate (you glance, approve, send). One chore, cut down and mostly handed off.</p>
+
+    <h2>Your staff of agents: what to hand off</h2>
+    <p>You're building a staff of agents — each one a job title AI holds. Set each up as a <strong>one-off</strong> (ask when you need it), a <strong>scheduled task</strong> (runs on a clock without you), or a <strong>saved agent</strong> (a specialist you invoke on demand).</p>
+    <table>
+      <thead><tr><th>Function</th><th>Jobs you can hand to an agent</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Research</strong></td><td>Prospect and company briefs, market and competitor scans, a daily news summary</td></tr>
+        <tr><td><strong>Marketing</strong></td><td>Draft posts from your wins, turn one idea into a week of content, a content calendar</td></tr>
+        <tr><td><strong>Sales</strong></td><td>Pre-call briefs, post-call follow-ups, nudges on stalled deals, proposal drafts</td></tr>
+        <tr><td><strong>Delivery</strong></td><td>Onboarding packets, meeting notes with action items, first-draft deliverables</td></tr>
+        <tr><td><strong>Finance &amp; admin</strong></td><td>Weekly KPI and cash digest, invoice reminders, expense sorting, inbox triage</td></tr>
+        <tr><td><strong>Personal ops</strong></td><td>A morning plan from your calendar, an end-of-day review, a weekly "what needs me" digest</td></tr>
+      </tbody>
+    </table>
+    <p>The same pattern works across every major assistant (as of September 2026): <strong>Claude — Cowork</strong> is your home base (no-code Scheduled Tasks that run in the cloud); <strong>Claude Code</strong> adds routines on a schedule, webhook, or GitHub event; <strong>ChatGPT — Work mode</strong> connects to Slack, Gmail, Drive, and Salesforce and runs on a schedule; <strong>Google Gemini</strong> has Scheduled Actions and an Agent Mode for Workspace; <strong>Microsoft Copilot</strong> runs agents across Microsoft 365. Learn the pattern, not the buttons.</p>
+    <div class="callout"><b>The principle:</b> add an agent before you add a person. Your org chart is a list of agents — you only hire a human when one is genuinely cheaper or better than the agent doing that job.</div>
+
+    <hr>
+
+    <h2>Do this now: your setup checklist</h2>
+    <p class="kicker">Set up</p>
+    <ul class="check">
+      <li>Confirm your Claude account has Cowork enabled</li>
+      <li>Put all your CFA worksheets in one folder</li>
+      <li>Open Cowork and connect that folder</li>
+    </ul>
+    <p class="kicker">Build</p>
+    <ul class="check">
+      <li>Load knowledge: have Claude summarize your offer, stage, and top gaps</li>
+      <li>Build your business dashboard</li>
+      <li>Build your KPI, dealflow, and cash trackers</li>
+      <li>Practice a conversational update: add one deal and log this week's KPIs</li>
+    </ul>
+    <p class="kicker">Automate &amp; commit</p>
+    <ul class="check">
+      <li>Build agent #1: your Monday metrics digest</li>
+      <li>Pick two more jobs from the catalog above and build them</li>
+      <li>Book a recurring 15-minute Friday slot to update your trackers</li>
+    </ul>
+
+    <hr>
+
+    <h2>A few ground rules</h2>
+    <ul>
+      <li>Keep yourself in the loop for money and sending — review anything before it goes to a client or moves funds.</li>
+      <li>Own your accounts and data, and keep a copy of your key trackers.</li>
+      <li>Never paste passwords or secrets into a prompt.</li>
+    </ul>
+
+    <div class="callout"><b>Keep going.</b> Add an agent before you add a person. After every worksheet you complete, tell Claude "add this to my dashboard." By the end of the CFA, your operating system runs your company.</div>
+
+    <div class="cta">
+      <a class="btn primary" href="https://ryangusroberts.github.io/cfa-dashboard/">Open your dashboard →</a>
+      <a class="btn ghost" href="https://community.vmleader.com">Open VM Community in Circle ↗</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="fl"><img src="https://vmleader.com/vm-icon.png" alt="" style="width:30px;height:30px;object-fit:contain"></div>
+  Corporate Freedom Accelerator · Vertical Motion
+</footer>
+
+</body>
+</html>
