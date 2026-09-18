@@ -243,7 +243,7 @@
 <div id="authView" class="authwrap hide">
   <div class="authcard">
     <div class="authbrand"><div class="logo"><img src="https://vmleader.com/vm-icon.png" alt="Vertical Motion"></div><div><b>Corporate Freedom Accelerator</b><br><span>Vertical Motion</span></div></div>
-        <h2 id="authTitle">Sign in</h2>
+    <h2 id="authTitle">Sign in</h2>
     <div class="lead" id="authLead">Enter your email and we'll send you a secure login link — no password needed.</div>
     <div id="authForm">
       <div class="field"><label>Your name <span style="color:var(--muted);font-weight:400">(first time only)</span></label><input id="suName" type="text" placeholder="Jane Founder" autocomplete="name"></div>
@@ -279,7 +279,7 @@
     <div class="ring-wrap"><svg id="ring" width="132" height="132" viewBox="0 0 132 132"></svg><div class="ring-label">Complete</div></div>
     <h4>Stages</h4>
     <div id="navstages"></div>
-    <a class="aoslink" href="https://verticalmotion.notion.site/Pre-Work-Your-AI-Operating-System-3ddf31252d8380829aaef1a662f3a9cf" target="_blank" rel="noopener"><span class="aos-k">Pre-work · Start here</span>Your AI Operating System ↗</a>
+    <a class="aoslink" href="https://ryangusroberts.github.io/cfa-dashboard/lesson-ai-operating-system.html" target="_blank" rel="noopener"><span class="aos-k">Pre-work · Start here</span>Your AI Operating System ↗</a>
     <a class="commlink" href="https://community.vmleader.com" target="_blank" rel="noopener"><span class="cc-txt">Open VM Community in Circle ↗</span></a>
   </aside>
   <main class="main">
@@ -1191,16 +1191,16 @@ const STAGES=[
 
 /* ========== NOTION LESSON LINKS (CFA 26-2) ========== */
 const NOTION={
- aios:"https://verticalmotion.notion.site/Pre-Work-Your-AI-Operating-System-3ddf31252d8380829aaef1a662f3a9cf",
- kickoff:"https://verticalmotion.notion.site/cfa-26-1-kickoff",
- 1:"https://verticalmotion.notion.site/cfa-26-2-week-1",
- 2:"https://verticalmotion.notion.site/cfa-26-2-week-2",
- 3:"https://verticalmotion.notion.site/cfa-26-2-week-3",
- 4:"https://verticalmotion.notion.site/cfa-26-2-week-4",
- 5:"https://www.notion.so/verticalmotion/CFA-26-2-Week-5-30ef31252d83812794fcc74816575074",
- 6:"https://www.notion.so/verticalmotion/CFA-26-2-Week-6-343f31252d8380e18f4efacc4486ba1f",
- 7:"https://verticalmotion.notion.site/cfa-26-2-week-7",
- 8:"https://verticalmotion.notion.site/cfa-26-2-week-8"
+ aios:"https://ryangusroberts.github.io/cfa-dashboard/lesson-ai-operating-system.html",
+ kickoff:"https://ryangusroberts.github.io/cfa-dashboard/lesson-kickoff.html",
+ 1:"https://ryangusroberts.github.io/cfa-dashboard/lesson-week-1.html",
+ 2:"https://ryangusroberts.github.io/cfa-dashboard/lesson-week-2.html",
+ 3:"https://ryangusroberts.github.io/cfa-dashboard/lesson-week-3.html",
+ 4:"https://ryangusroberts.github.io/cfa-dashboard/lesson-week-4.html",
+ 5:"https://ryangusroberts.github.io/cfa-dashboard/lesson-week-5.html",
+ 6:"https://ryangusroberts.github.io/cfa-dashboard/lesson-week-6.html",
+ 7:"https://ryangusroberts.github.io/cfa-dashboard/lesson-week-7.html",
+ 8:"https://ryangusroberts.github.io/cfa-dashboard/lesson-week-8.html"
 };
 // Lesson themes per week (CFA 26-2)
 const NOTION_THEME={1:"Offer Architecture",2:"Validation Conversations",3:"First Sales",4:"Delivery MVP",5:"Momentum & Messaging",6:"Marketing Systems",7:"CEO Operating Systems",8:"90-Day Plan"};
@@ -1472,7 +1472,7 @@ async function loadProgress(){const {data,error}=await sb.from('progress').selec
 /* ================= COACH ================= */
 async function loadCoach(){
   document.getElementById('cohortWrap').innerHTML='<div class="empty">Loading cohort…</div>';
-    const {data:allProfiles,error:e1}=await sb.from('profiles').select('*').order('created_at',{ascending:true});
+  const {data:allProfiles,error:e1}=await sb.from('profiles').select('*').order('created_at',{ascending:true});
   const {data:rows,error:e2}=await sb.from('progress').select('user_id,doc_key,fields,file_name,updated_at');
   if(e1||e2){document.getElementById('cohortWrap').innerHTML='<div class="empty">Could not load cohort: '+esc((e1||e2).message)+'</div>';return;}
   const clients=(allProfiles||[]).filter(p=>!isCoachEmail(p.email||''));
